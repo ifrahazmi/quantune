@@ -1,0 +1,2662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantune — Autonomous SLM Fine-Tuning Studio</title>
+    <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+    <link rel="apple-touch-icon" href="/static/logo.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css?v=424">
+    <link rel="stylesheet" href="/static/playground.css?v=424">
+</head>
+<body>
+    <div class="app-wrapper">
+        <!-- Floating Navigation Guardrail Toast -->
+        <div id="navGuardToast" class="nav-guard-toast hidden">
+            <div class="nav-guard-icon-wrap">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+            </div>
+            <div class="nav-guard-content">
+                <span class="nav-guard-title">Prerequisite Required</span>
+                <span id="navGuardToastText" class="nav-guard-msg">Please upload or select a dataset in Step 1 first.</span>
+            </div>
+            <button type="button" class="nav-guard-close" onclick="hideNavGuardToast()" aria-label="Close">×</button>
+        </div>
+
+        <!-- Top Navigation -->
+        <header class="top-nav">
+            <div class="nav-container">
+                <a href="/" class="logo">
+                    <div class="logo-icon">
+                        <img src="/static/logo.svg" alt="Quantune Logo" width="34" height="34" class="brand-logo-img">
+                    </div>
+                    <span class="logo-text">Quantune</span>
+                </a>
+                
+                <nav class="nav-steps">
+                    <div class="progress-bar-container" id="progressBar">
+                        <div class="progress-step-nav" data-step="1">
+                            <div class="progress-dot-nav">
+                                <svg class="check-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                    <polyline points="20 6 9 17 4 12"></polyline>
+                                </svg>
+                                <div class="pulse-ring-nav"></div>
+                            </div>
+                            <span class="step-label-nav">Upload Data</span>
+                        </div>
+                        <div class="progress-connector"></div>
+                        <div class="progress-step-nav" data-step="2">
+                            <div class="progress-dot-nav">
+                                <svg class="check-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                    <polyline points="20 6 9 17 4 12"></polyline>
+                                </svg>
+                                <div class="pulse-ring-nav"></div>
+                            </div>
+                            <span class="step-label-nav">Configure</span>
+                        </div>
+                        <div class="progress-connector"></div>
+                        <div class="progress-step-nav" data-step="3">
+                            <div class="progress-dot-nav">
+                                <svg class="check-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                    <polyline points="20 6 9 17 4 12"></polyline>
+                                </svg>
+                                <div class="pulse-ring-nav"></div>
+                            </div>
+                            <span class="step-label-nav">Recommendation</span>
+                        </div>
+                        <div class="progress-connector"></div>
+                        <div class="progress-step-nav" data-step="4">
+                            <div class="progress-dot-nav">
+                                <svg class="check-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                    <polyline points="20 6 9 17 4 12"></polyline>
+                                </svg>
+                                <div class="pulse-ring-nav"></div>
+                            </div>
+                            <span class="step-label-nav">Training</span>
+                        </div>
+                        <div class="progress-connector"></div>
+                        <div class="progress-step-nav" data-step="5">
+                            <div class="progress-dot-nav">
+                                <svg class="check-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                    <polyline points="20 6 9 17 4 12"></polyline>
+                                </svg>
+                                <div class="pulse-ring-nav"></div>
+                            </div>
+                            <span class="step-label-nav">Test</span>
+                        </div>
+                    </div>
+                </nav>
+
+                <div class="nav-actions">
+                    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+                        <svg class="sun-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="5"></circle>
+                            <line x1="12" y1="1" x2="12" y2="3"></line>
+                            <line x1="12" y1="21" x2="12" y2="23"></line>
+                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                            <line x1="1" y1="12" x2="3" y2="12"></line>
+                            <line x1="21" y1="12" x2="23" y2="12"></line>
+                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                        </svg>
+                        <svg class="moon-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                        </svg>
+                    </button>
+                    <button class="btn btn-ghost btn-small nav-test-btn" id="navTestBtn" type="button" title="Jump directly to Model Test & Refinement">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                        </svg>
+                        Test Model
+                    </button>
+                    <a href="/about" class="nav-link" title="About Quantune & Creator" style="font-size: 0.88rem; font-weight: 600; text-decoration: none; padding: 0.4rem 0.6rem;">About</a>
+                    <a href="https://github.com/ifrahazmi" class="nav-link" target="_blank" title="GitHub: @ifrahazmi">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Step 1: Upload Dataset -->
+            <section class="step-content active" id="step1">
+                <div class="content-header">
+                    <div class="header-badge">Step 1</div>
+                    <h1>Data Hub, Diagnostics & System Capability</h1>
+                    <p>Universal multi-format ingestion, deep 12-point dataset diagnostics, interactive repair studio, and hardware benchmarking</p>
+                </div>
+
+                <!-- Latest Fine-Tuned Model Quick Access Banner -->
+                <div class="latest-model-banner hidden" id="latestModelBanner">
+                    <div class="latest-banner-left">
+                        <div class="latest-banner-icon">🏆</div>
+                        <div class="latest-banner-details">
+                            <div class="latest-banner-title">
+                                <span class="banner-tag">ACTIVE CHECKPOINT</span>
+                                <strong id="latestModelName">Llama 3.2 3B</strong>
+                                <span class="latest-banner-loss" id="latestModelLoss">Loss: 0.4702</span>
+                                <span class="latest-banner-badge" id="latestModelBadge">Completed</span>
+                            </div>
+                            <p class="latest-banner-meta" id="latestModelMeta">Trained checkpoint ready · Loss reduced by 80.8% · Testing Studio active</p>
+                        </div>
+                    </div>
+                    <div class="latest-banner-actions">
+                        <button class="btn btn-primary btn-small" id="openLatestInStudioBtn" type="button">
+                            🧪 Open in Testing Studio
+                        </button>
+                        <a class="btn btn-secondary btn-small" id="downloadLatestWeightsBtn" href="/models/runs" download>
+                            📥 Weights (.bin)
+                        </a>
+                    </div>
+                </div>
+
+                <!-- System Hardware & Local Runtime Intelligence Cockpit -->
+                <div class="hardware-cockpit-card" id="hardwareHub">
+                    <div class="cockpit-header">
+                        <div class="cockpit-title-wrap">
+                            <div class="cockpit-status-tag">
+                                <span class="live-pulse-dot"></span> LIVE SYSTEM TELEMETRY
+                            </div>
+                            <h3 class="cockpit-title">Host Hardware & Local Runtime Intelligence</h3>
+                            <p class="cockpit-subtitle">Real-time hardware benchmarking, memory headroom analysis & local Ollama engine</p>
+                        </div>
+                        <div class="cockpit-action-wrap">
+                            <div class="cockpit-tier-badge" id="hwTierBadge">
+                                <span class="tier-icon">⚡</span>
+                                <span id="hwTierText">Tier 2: Mid-Range GPU (4.0GB VRAM)</span>
+                            </div>
+                            <button class="btn-cockpit-api" id="openApiConfigBtn" onclick="openApiConfigModal()" type="button">
+                                <span class="btn-icon">⚙️</span> Configure Providers & API Keys
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="cockpit-bento-grid" id="hwMetricsGrid">
+                        <!-- CPU -->
+                        <div class="bento-tile bento-cpu" id="hwCpuCard">
+                            <div class="bento-top">
+                                <div class="bento-icon-box icon-cpu">💻</div>
+                                <span class="bento-tag">CPU Compute</span>
+                            </div>
+                            <div class="bento-metric" id="hwCpuVal">16 Cores</div>
+                            <div class="bento-sub" id="hwCpuSub">Intel64 · Multi-Core Processor</div>
+                            <div class="bento-bar-wrap">
+                                <div class="bento-bar-fill bar-cpu" id="hwCpuBar" style="width: 100%"></div>
+                            </div>
+                        </div>
+
+                        <!-- RAM -->
+                        <div class="bento-tile bento-ram" id="hwRamCard">
+                            <div class="bento-top">
+                                <div class="bento-icon-box icon-ram">🧠</div>
+                                <span class="bento-tag">System Memory</span>
+                            </div>
+                            <div class="bento-metric" id="hwRamVal">31.7 GB Total</div>
+                            <div class="bento-sub" id="hwRamSub">6.7 GB Free (78% Load)</div>
+                            <div class="bento-bar-wrap">
+                                <div class="bento-bar-fill bar-ram" id="hwRamBar" style="width: 78%"></div>
+                            </div>
+                        </div>
+
+                        <!-- GPU -->
+                        <div class="bento-tile bento-gpu" id="hwGpuCard">
+                            <div class="bento-top">
+                                <div class="bento-icon-box icon-gpu">🎮</div>
+                                <span class="bento-tag">GPU Accelerator</span>
+                            </div>
+                            <div class="bento-metric" id="hwGpuVal">NVIDIA T1200</div>
+                            <div class="bento-sub" id="hwGpuSub">4.0 GB VRAM · CUDA Ready</div>
+                            <div class="bento-bar-wrap">
+                                <div class="bento-bar-fill bar-gpu" id="hwGpuBar" style="width: 85%"></div>
+                            </div>
+                        </div>
+
+                        <!-- OLLAMA -->
+                        <div class="bento-tile bento-ollama" id="hwOllamaCard">
+                            <div class="bento-top">
+                                <div class="bento-icon-box icon-ollama">🦙</div>
+                                <span class="bento-tag">Local Ollama</span>
+                            </div>
+                            <div class="bento-metric val-emerald" id="hwOllamaVal">Connected (8 Models)</div>
+                            <div class="bento-sub" id="hwOllamaSub">localhost:11434 · Active</div>
+                            <div class="bento-models-preview" id="hwOllamaModelsPreview">
+                                <span class="model-mini-chip">qwen2.5:3b</span>
+                                <span class="model-mini-chip">llama3.2:3b</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="cockpit-rec-footer" id="hwRecBar">
+                        <div class="rec-left">
+                            <span class="rec-icon">💡</span>
+                            <div class="rec-text-wrap">
+                                <strong class="rec-title">Tailored Hardware Recommendation:</strong>
+                                <span class="rec-desc" id="hwRecText">3B–4B Local QLoRA (Qwen 2.5 3B, Llama 3.2 3B). 32GB RAM enables high-speed quantization without out-of-memory errors.</span>
+                            </div>
+                        </div>
+                        <button class="rec-action-btn" id="applyRecModelBtn" onclick="applyOptimalOllamaModel()" type="button">
+                            ✨ Pre-Select Qwen 2.5 3B
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 1-Click Built-in Sample Datasets -->
+                <div class="sample-datasets-hub" id="sampleDatasetsHub">
+                    <div class="hub-header">
+                        <div class="hub-title-group">
+                            <span class="hub-icon">🚀</span>
+                            <h3>Instant 1-Click Sample Datasets</h3>
+                        </div>
+                        <span class="hub-hint">Select any curated domain dataset to load, validate, and inspect diagnostics instantly</span>
+                    </div>
+                    <div class="sample-hub-grid" id="sampleHubGrid">
+                        <!-- Populated dynamically by JS with fallbacks -->
+                        <div class="hub-card" data-sample="customer_support">
+                            <div class="hub-card-top">
+                                <span class="hub-card-icon">🎧</span>
+                                <span class="hub-card-badge">55 rows</span>
+                            </div>
+                            <h4 class="hub-card-title">Customer Support</h4>
+                            <p class="hub-card-desc">Refunds, delivery issues & order tracking with empathetic tone.</p>
+                            <button class="btn btn-secondary btn-small hub-load-btn" type="button" data-sample-id="customer_support">Load Dataset</button>
+                        </div>
+                        <div class="hub-card" data-sample="python_coder">
+                            <div class="hub-card-top">
+                                <span class="hub-card-icon">💻</span>
+                                <span class="hub-card-badge">55 rows</span>
+                            </div>
+                            <h4 class="hub-card-title">Python Coder</h4>
+                            <p class="hub-card-desc">Clean scripts, docstrings, type annotations & unit test validation.</p>
+                            <button class="btn btn-secondary btn-small hub-load-btn" type="button" data-sample-id="python_coder">Load Dataset</button>
+                        </div>
+                        <div class="hub-card" data-sample="medical_qa">
+                            <div class="hub-card-top">
+                                <span class="hub-card-icon">🩺</span>
+                                <span class="hub-card-badge">55 rows</span>
+                            </div>
+                            <h4 class="hub-card-title">Clinical Health Q&A</h4>
+                            <p class="hub-card-desc">Symptom triaging, pharmacology cautions & safe triage advice.</p>
+                            <button class="btn btn-secondary btn-small hub-load-btn" type="button" data-sample-id="medical_qa">Load Dataset</button>
+                        </div>
+                        <div class="hub-card" data-sample="finance_analyst">
+                            <div class="hub-card-top">
+                                <span class="hub-card-icon">📊</span>
+                                <span class="hub-card-badge">55 rows</span>
+                            </div>
+                            <h4 class="hub-card-title">Financial Analyst</h4>
+                            <p class="hub-card-desc">Earnings call sentiment extraction & strict JSON analytics schema.</p>
+                            <button class="btn btn-secondary btn-small hub-load-btn" type="button" data-sample-id="finance_analyst">Load Dataset</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-grid">
+                    <!-- Main Upload Area -->
+                    <div class="content-main">
+                        <div class="card upload-card">
+                            <div class="upload-zone" id="dropZone">
+                                <div class="upload-visual">
+                                    <div class="upload-icon-bg">
+                                        <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                            <polyline points="17 8 12 3 7 8"></polyline>
+                                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div class="upload-text">
+                                    <span class="upload-main">Drop your dataset file here</span>
+                                    <span class="upload-sub">or <span class="upload-browse">browse files</span></span>
+                                    <div class="accepted-formats-pills">
+                                        <span class="fmt-tag">.jsonl</span>
+                                        <span class="fmt-tag">.json</span>
+                                        <span class="fmt-tag">.csv</span>
+                                        <span class="fmt-tag">.tsv</span>
+                                        <span class="fmt-tag">.txt</span>
+                                    </div>
+                                </div>
+                                <input type="file" id="fileInput" accept=".jsonl,.json,.csv,.tsv,.txt" hidden>
+                            </div>
+
+                            <div class="file-info hidden" id="fileInfo">
+                                <div class="file-icon-wrapper">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                        <polyline points="14 2 14 8 20 8"></polyline>
+                                    </svg>
+                                </div>
+                                <div class="file-details">
+                                    <div class="file-name" id="fileName">dataset.jsonl</div>
+                                    <div class="file-meta">
+                                        <span class="file-stat success" id="fileRows">-- examples</span>
+                                        <span class="file-stat" id="fileSize">-- KB</span>
+                                        <span class="file-stat format-badge" id="fileConversionBadge">Normalized to Chat</span>
+                                    </div>
+                                </div>
+                                <button class="btn-remove" id="removeFile" title="Remove file">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                                    </svg>
+                                </button>
+                            </div>
+
+                            <!-- Diagnostic Report Card -->
+                            <div class="card diagnostic-report-card hidden" id="diagnosticReportCard">
+                                <div class="diag-header">
+                                    <div class="diag-score-group">
+                                        <div class="diag-grade-badge" id="diagGradeBadge">A+</div>
+                                        <div class="diag-score-info">
+                                            <div class="diag-score-title">
+                                                <span>Fine-Tuning Readiness:</span>
+                                                <strong id="diagScoreVal">96%</strong>
+                                                <span class="diag-status-pill" id="diagStatusPill">Production Ready</span>
+                                            </div>
+                                            <div class="diag-progress-track">
+                                                <div class="diag-progress-fill" id="diagProgressFill" style="width: 96%;"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="diag-actions">
+                                        <button class="btn btn-secondary btn-small" id="autoCleanBtn" type="button">
+                                            ✨ 1-Click Auto-Clean
+                                        </button>
+                                        <a class="btn btn-ghost btn-small" id="downloadCleanedBtn" href="#" target="_blank">
+                                            📥 Download Cleaned JSONL
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <!-- Key Metrics Grid -->
+                                <div class="diag-metrics-grid">
+                                    <div class="diag-stat-box">
+                                        <span class="diag-stat-label">Total Examples</span>
+                                        <strong class="diag-stat-val" id="diagTotalRows">--</strong>
+                                    </div>
+                                    <div class="diag-stat-box">
+                                        <span class="diag-stat-label">Valid Chat Turns</span>
+                                        <strong class="diag-stat-val success" id="diagValidRows">--</strong>
+                                    </div>
+                                    <div class="diag-stat-box">
+                                        <span class="diag-stat-label">Total Tokens</span>
+                                        <strong class="diag-stat-val" id="diagTotalTokens">--</strong>
+                                    </div>
+                                    <div class="diag-stat-box">
+                                        <span class="diag-stat-label">Avg Prompt Tokens</span>
+                                        <strong class="diag-stat-val" id="diagAvgPromptTokens">--</strong>
+                                    </div>
+                                    <div class="diag-stat-box">
+                                        <span class="diag-stat-label">P95 Response Tokens</span>
+                                        <strong class="diag-stat-val" id="diagP95Tokens">--</strong>
+                                    </div>
+                                    <div class="diag-stat-box">
+                                        <span class="diag-stat-label">System Prompts</span>
+                                        <strong class="diag-stat-val" id="diagSysCoverage">--%</strong>
+                                    </div>
+                                </div>
+
+                                <!-- Minimum Criteria Checklist Grid -->
+                                <div class="criteria-checklist-section">
+                                    <div class="section-subhead">
+                                        <h4>Dataset Quality & Criteria Checklist</h4>
+                                        <span class="subhead-hint">Core requirements for stable gradient descent and high accuracy</span>
+                                    </div>
+                                    <div class="criteria-grid" id="criteriaChecklistGrid">
+                                        <!-- Dynamically populated -->
+                                    </div>
+                                </div>
+
+                                <!-- Optimization Recommendations -->
+                                <div class="diag-recommendations-section" id="diagRecsSection">
+                                    <div class="section-subhead">
+                                        <h4>Actionable Quality Improvements</h4>
+                                    </div>
+                                    <ul class="diag-recs-list" id="diagRecsList">
+                                        <!-- Dynamically populated -->
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Interactive Dataset Editor & Repair Studio Cockpit Card -->
+                            <div class="card dataset-editor-studio-cockpit hidden" id="datasetEditorStudio">
+                                <div class="studio-cockpit-content">
+                                    <div class="studio-cockpit-info">
+                                        <div class="cockpit-badge-row">
+                                            <span class="studio-status-pill">
+                                                <span class="live-pulse-dot"></span> REPAIR STUDIO
+                                            </span>
+                                            <span class="cockpit-meta-pill" id="studioBadgeExamplesCount">55 Examples</span>
+                                            <span class="cockpit-meta-pill" id="studioBadgeFormat">Direct Q&A</span>
+                                            <span class="cockpit-meta-pill" id="studioBadgeAvgTokens">~30 Tok/Ex</span>
+                                        </div>
+                                        <h4 class="cockpit-heading">Interactive Dataset Editor & Repair Studio</h4>
+                                        <p class="cockpit-desc">
+                                            Inspect individual examples, apply 1-click text repairs, configure global personas, or browse the complete 10-row scrollable table directly inside the Studio Popup.
+                                        </p>
+                                    </div>
+
+                                    <div class="studio-cockpit-actions">
+                                        <button class="btn btn-secondary btn-small" id="openAddRowModalBtn" type="button">
+                                            + Add Example
+                                        </button>
+                                        <button class="btn btn-secondary btn-small" id="autoCleanBtn" type="button">
+                                            ✨ 1-Click Auto-Clean
+                                        </button>
+                                        <button class="btn btn-primary btn-cockpit-launch" id="openFullEditorStudioBtn" onclick="openStudioPopup(0, 'form')" type="button">
+                                            🛠️ Launch Repair Studio Popup
+                                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                                                <polyline points="15 3 21 3 21 9"></polyline>
+                                                <line x1="10" y1="14" x2="21" y2="3"></line>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Error Display -->
+                        <div class="error-banner hidden" id="errorBanner">
+                            <div class="error-content">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                                </svg>
+                                <span class="error-text" id="errorText"></span>
+                            </div>
+                            <button class="error-close" id="errorClose">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Sidebar Info -->
+                    <aside class="content-sidebar">
+                        <div class="card info-card">
+                            <div class="info-header">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <line x1="12" y1="16" x2="12" y2="12"></line>
+                                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                                </svg>
+                                <span>Multi-Format Ingestion</span>
+                            </div>
+                            <ul class="requirements-list">
+                                <li>
+                                    <span class="req-check">✓</span>
+                                    <span><strong>JSONL</strong>: Standard <code>{"messages": [...]}</code></span>
+                                </li>
+                                <li>
+                                    <span class="req-check">✓</span>
+                                    <span><strong>JSON</strong>: Array of objects or dictionary</span>
+                                </li>
+                                <li>
+                                    <span class="req-check">✓</span>
+                                    <span><strong>CSV / TSV</strong>: <code>instruction,response</code> or <code>input,output</code></span>
+                                </li>
+                                <li>
+                                    <span class="req-check">✓</span>
+                                    <span><strong>TXT</strong>: Double-newline or Q:/A: separated</span>
+                                </li>
+                                <li>
+                                    <span class="req-check">⚡</span>
+                                    <span><strong>Auto-Normalized</strong>: All formats convert cleanly to canonical chat JSONL</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="card example-card">
+                            <div class="info-header">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="16 18 22 12 16 6"></polyline>
+                                    <polyline points="8 6 2 12 8 18"></polyline>
+                                </svg>
+                                <span>Canonical Chat Format</span>
+                            </div>
+                            <pre class="code-block"><code>{"messages": [
+  {"role": "system", "content": "..."},
+  {"role": "user", "content": "..."},
+  {"role": "assistant", "content": "..."}
+]}</code></pre>
+                        </div>
+                    </aside>
+                </div>
+
+                <!-- Action Bar -->
+                <div class="action-bar">
+                    <button class="btn btn-primary" id="continueBtn" disabled>
+                        Continue
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Step 2: Configuration & Optimization Studio -->
+            <section class="step-content" id="step2">
+                <!-- Header -->
+                <div class="content-header centered">
+                    <div class="header-badge">Step 2</div>
+                    <h1>Configure &amp; Optimize Training</h1>
+                    <p>Dataset-tailored hyperparameters, hardware feasibility checks, and AI strategy recommendations</p>
+                </div>
+
+                <!-- Active Dataset Intelligence Strip -->
+                <div class="config-dataset-strip" id="configDatasetStrip">
+                    <div class="strip-item">
+                        <span class="strip-icon">📊</span>
+                        <div class="strip-info">
+                            <span class="strip-label">Dataset Volume</span>
+                            <span class="strip-val" id="configStripRows">Checking...</span>
+                        </div>
+                    </div>
+                    <div class="strip-divider"></div>
+                    <div class="strip-item">
+                        <span class="strip-icon">📏</span>
+                        <div class="strip-info">
+                            <span class="strip-label">Avg Sequence Length</span>
+                            <span class="strip-val" id="configStripAvgTokens">~256 tokens</span>
+                        </div>
+                    </div>
+                    <div class="strip-divider"></div>
+                    <div class="strip-item">
+                        <span class="strip-icon">💬</span>
+                        <div class="strip-info">
+                            <span class="strip-label">Format / Quality</span>
+                            <span class="strip-val" id="configStripFormat">Standard Q&amp;A · High</span>
+                        </div>
+                    </div>
+                    <div class="strip-divider"></div>
+                    <div class="strip-item">
+                        <span class="strip-icon">⚡</span>
+                        <div class="strip-info">
+                            <span class="strip-label">Hardware Acceleration</span>
+                            <span class="strip-val" id="configStripHardware">NVIDIA T1200 · 4.0GB VRAM</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI Recommendation Banner & Strategy Presets -->
+                <div class="card ai-strategy-hero" id="aiStrategyHero">
+                    <div class="ai-hero-header">
+                        <div class="ai-hero-title-group">
+                            <span class="ai-hero-sparkle">✨</span>
+                            <div>
+                                <h3 class="ai-hero-title">AI Recommendation Engine</h3>
+                                <p class="ai-hero-subtitle">Automated dataset analysis and hardware-matched hyperparameter strategy</p>
+                            </div>
+                        </div>
+                        <div class="ai-hero-badge" id="aiRecBadge">
+                            <span class="badge-dot"></span>
+                            <span id="aiRecBadgeText">Recommended: Balanced QLoRA</span>
+                        </div>
+                    </div>
+
+                    <div class="ai-rec-box">
+                        <div class="ai-rec-rationale" id="aiRecRationale">
+                            Analyzing dataset properties and hardware capacity...
+                        </div>
+                    </div>
+
+                    <div class="strategy-preset-container">
+                        <div class="preset-label-bar">
+                            <span class="preset-label">1-Click Optimization Presets:</span>
+                            <button type="button" class="btn-text-action" id="btnApplyAiRec">✨ Re-Apply AI Optimal</button>
+                        </div>
+                        <div class="strategy-preset-grid">
+                            <button type="button" class="strategy-preset-chip active" data-preset="balanced" id="presetBalanced">
+                                <span class="preset-chip-icon">🎯</span>
+                                <div class="preset-chip-text">
+                                    <span class="preset-name">Balanced QLoRA</span>
+                                    <span class="preset-desc">Optimal accuracy vs memory. Rank 16, 4-bit, Cosine</span>
+                                </div>
+                            </button>
+                            <button type="button" class="strategy-preset-chip" data-preset="fast" id="presetFast">
+                                <span class="preset-chip-icon">⚡</span>
+                                <div class="preset-chip-text">
+                                    <span class="preset-name">Fast Prototyping</span>
+                                    <span class="preset-desc">Quick validation. Rank 8, 2 Epochs, Higher LR</span>
+                                </div>
+                            </button>
+                            <button type="button" class="strategy-preset-chip" data-preset="accuracy" id="presetAccuracy">
+                                <span class="preset-chip-icon">🏆</span>
+                                <div class="preset-chip-text">
+                                    <span class="preset-name">Max Accuracy</span>
+                                    <span class="preset-desc">Rank 32, All Linear, Grad Accum 8, Cosine</span>
+                                </div>
+                            </button>
+                            <button type="button" class="strategy-preset-chip" data-preset="reasoning" id="presetReasoning">
+                                <span class="preset-chip-icon">🧠</span>
+                                <div class="preset-chip-text">
+                                    <span class="preset-name">Reasoning &amp; Context</span>
+                                    <span class="preset-desc">Rank 32, 4096 Tokens, Accum 16, Long Context</span>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2 Interactive Questions: Task Type & Deployment Target -->
+                <div class="config-questions-section">
+                    <!-- Question 1: Task Type -->
+                    <div class="config-question-block" id="questionTask">
+                        <div class="config-section-title">
+                            <span class="config-step-num">1</span>
+                            <h3>What is your model's primary task?</h3>
+                            <span class="auto-detect-pill hidden" id="autoDetectBanner">✨ <span id="autoDetectText">Inferred: Conversation</span></span>
+                        </div>
+                        <div class="flow-options five-items config-options-row">
+                            <button type="button" class="flow-option" data-task="classify">
+                                <span class="flow-option-icon">🏷️</span>
+                                <span class="flow-option-title">Classify Text</span>
+                                <span class="flow-option-desc">Sentiment, categories, spam</span>
+                            </button>
+                            <button type="button" class="flow-option" data-task="qa">
+                                <span class="flow-option-icon">❓</span>
+                                <span class="flow-option-title">Answer Questions</span>
+                                <span class="flow-option-desc">Q&amp;A, knowledge, FAQ</span>
+                            </button>
+                            <button type="button" class="flow-option selected" data-task="conversation">
+                                <span class="flow-option-icon">💬</span>
+                                <span class="flow-option-title">Conversations</span>
+                                <span class="flow-option-desc">Chatbots, assistants</span>
+                            </button>
+                            <button type="button" class="flow-option" data-task="generation">
+                                <span class="flow-option-icon">✍️</span>
+                                <span class="flow-option-title">Generate Content</span>
+                                <span class="flow-option-desc">Writing, creative, code</span>
+                            </button>
+                            <button type="button" class="flow-option" data-task="extraction">
+                                <span class="flow-option-icon">🔍</span>
+                                <span class="flow-option-title">Extract Info</span>
+                                <span class="flow-option-desc">Entities, structured JSON</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Question 2: Deployment Target -->
+                    <div class="config-question-block" id="questionDeployment">
+                        <div class="config-section-title">
+                            <span class="config-step-num">2</span>
+                            <h3>Where do you plan to deploy your model?</h3>
+                        </div>
+                        <div class="flow-options six-items config-options-row">
+                            <button type="button" class="flow-option selected" data-deployment="cloud_api">
+                                <span class="flow-option-icon">☁️</span>
+                                <span class="flow-option-title">Cloud API</span>
+                                <span class="flow-option-desc">AWS, GCP, vLLM, Ollama</span>
+                            </button>
+                            <button type="button" class="flow-option" data-deployment="desktop_app">
+                                <span class="flow-option-icon">🖥️</span>
+                                <span class="flow-option-title">Desktop App</span>
+                                <span class="flow-option-desc">Windows, Mac, LM Studio</span>
+                            </button>
+                            <button type="button" class="flow-option" data-deployment="mobile_app">
+                                <span class="flow-option-icon">📱</span>
+                                <span class="flow-option-title">Mobile App</span>
+                                <span class="flow-option-desc">iOS, Android, MLC-LLM</span>
+                            </button>
+                            <button type="button" class="flow-option" data-deployment="edge_device">
+                                <span class="flow-option-icon">📟</span>
+                                <span class="flow-option-title">Edge Device</span>
+                                <span class="flow-option-desc">Jetson, Raspberry Pi</span>
+                            </button>
+                            <button type="button" class="flow-option" data-deployment="web_browser">
+                                <span class="flow-option-icon">🌐</span>
+                                <span class="flow-option-title">Web Browser</span>
+                                <span class="flow-option-desc">WebGPU, Transformers.js</span>
+                            </button>
+                            <button type="button" class="flow-option" data-deployment="not_sure">
+                                <span class="flow-option-icon">✨</span>
+                                <span class="flow-option-title">All / Flexible</span>
+                                <span class="flow-option-desc">Balanced recommendation</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4-Pillar Hyperparameter Studio Bento Grid -->
+                <div class="config-bento-header">
+                    <div class="bento-title-group">
+                        <span class="bento-badge">Accuracy &amp; Capacity Controls</span>
+                        <h3>Fine-Tuning Architecture &amp; Hyperparameters</h3>
+                    </div>
+                    <span class="bento-subtitle">Fine-tune each parameter below or stick with the AI preset above</span>
+                </div>
+
+                <div class="config-bento-grid">
+                    <!-- Pillar 1: LoRA Architecture -->
+                    <div class="card config-card">
+                        <div class="config-card-header">
+                            <div class="config-card-icon">🧬</div>
+                            <div>
+                                <h4 class="config-card-title">LoRA Adapter Architecture</h4>
+                                <span class="config-card-desc">Parameter capacity and projection layers</span>
+                            </div>
+                        </div>
+                        <div class="config-card-body">
+                            <div class="hyperparam-field">
+                                <div class="field-label-row">
+                                    <label for="paramLoraR">LoRA Rank (r)</label>
+                                    <span class="field-val-badge" id="valLoraR">16</span>
+                                </div>
+                                <input type="range" class="config-slider" id="paramLoraR" min="4" max="64" step="4" value="16">
+                                <span class="field-subtext">Adapter capacity. Higher values capture complex domain knowledge.</span>
+                            </div>
+
+                            <div class="hyperparam-field">
+                                <div class="field-label-row">
+                                    <label for="paramLoraAlpha">LoRA Alpha (&alpha;)</label>
+                                    <span class="field-val-badge" id="valLoraAlpha">32</span>
+                                </div>
+                                <input type="range" class="config-slider" id="paramLoraAlpha" min="8" max="128" step="8" value="32">
+                                <span class="field-subtext">Scaling factor. Rule of thumb: typically 2 &times; Rank.</span>
+                            </div>
+
+                            <div class="hyperparam-field">
+                                <label for="paramTargetModules">Target Projection Modules</label>
+                                <select id="paramTargetModules" class="config-select">
+                                    <option value="all_linear" selected>All Linear Layers (q, k, v, o, gate, up, down) · Max Accuracy</option>
+                                    <option value="attention">Attention Only (q, v) · Memory Saver</option>
+                                </select>
+                                <span class="field-subtext">All linear layers dramatically improves reasoning retention.</span>
+                            </div>
+
+                            <div class="hyperparam-field">
+                                <div class="field-label-row">
+                                    <label for="paramLoraDropout">LoRA Dropout</label>
+                                    <span class="field-val-badge" id="valLoraDropout">0.05</span>
+                                </div>
+                                <select id="paramLoraDropout" class="config-select">
+                                    <option value="0.0">0.0 (None · Best for large datasets &gt;5k)</option>
+                                    <option value="0.05" selected>0.05 (Recommended · Standard regularization)</option>
+                                    <option value="0.10">0.10 (Strong · Prevents overfitting on &lt;500 rows)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pillar 2: Optimization & Convergence -->
+                    <div class="card config-card">
+                        <div class="config-card-header">
+                            <div class="config-card-icon">⚡</div>
+                            <div>
+                                <h4 class="config-card-title">Optimization &amp; Convergence</h4>
+                                <span class="config-card-desc">Batching, learning rate &amp; decay schedule</span>
+                            </div>
+                        </div>
+                        <div class="config-card-body">
+                            <div class="fields-row-2">
+                                <div class="hyperparam-field">
+                                    <label for="paramEpochs">Training Epochs</label>
+                                    <input type="number" id="paramEpochs" min="1" max="15" value="3" class="config-input">
+                                    <span class="field-subtext">Passes through full dataset</span>
+                                </div>
+                                <div class="hyperparam-field">
+                                    <label for="paramBatchSize">Per-Device Batch</label>
+                                    <select id="paramBatchSize" class="config-select">
+                                        <option value="1">1 (Ultra Safe VRAM)</option>
+                                        <option value="2" selected>2 (Optimal for 4GB-8GB)</option>
+                                        <option value="4">4 (High VRAM)</option>
+                                        <option value="8">8 (Multi-GPU/16GB+)</option>
+                                    </select>
+                                    <span class="field-subtext">VRAM footprint per step</span>
+                                </div>
+                            </div>
+
+                            <div class="fields-row-2">
+                                <div class="hyperparam-field">
+                                    <label for="paramGradAccum">Grad Accumulation</label>
+                                    <select id="paramGradAccum" class="config-select">
+                                        <option value="1">1x (No accum)</option>
+                                        <option value="2">2x</option>
+                                        <option value="4" selected>4x (Recommended)</option>
+                                        <option value="8">8x</option>
+                                        <option value="16">16x (Virtual large batch)</option>
+                                    </select>
+                                    <span class="field-subtext">Effective batch = Batch &times; Accum</span>
+                                </div>
+                                <div class="hyperparam-field">
+                                    <label for="paramLR">Learning Rate</label>
+                                    <select id="paramLR" class="config-select">
+                                        <option value="0.0002" selected>2e-4 (Recommended for LoRA)</option>
+                                        <option value="0.0001">1e-4 (Conservative / Large Models)</option>
+                                        <option value="0.00005">5e-5 (Fine Alignment)</option>
+                                        <option value="0.0003">3e-4 (Fast Convergence)</option>
+                                    </select>
+                                    <span class="field-subtext">AdamW 8-bit optimizer</span>
+                                </div>
+                            </div>
+
+                            <div class="fields-row-2">
+                                <div class="hyperparam-field">
+                                    <label for="paramScheduler">LR Scheduler</label>
+                                    <select id="paramScheduler" class="config-select">
+                                        <option value="cosine" selected>Cosine with Warmup (Recommended)</option>
+                                        <option value="linear">Linear Decay</option>
+                                        <option value="constant">Constant</option>
+                                    </select>
+                                </div>
+                                <div class="hyperparam-field">
+                                    <label for="paramWarmup">Warmup Ratio</label>
+                                    <select id="paramWarmup" class="config-select">
+                                        <option value="0.03">3%</option>
+                                        <option value="0.05">5%</option>
+                                        <option value="0.10" selected>10% (Recommended)</option>
+                                        <option value="0.15">15%</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="hyperparam-field">
+                                <label for="paramWeightDecay">Weight Decay (L2 Regularization)</label>
+                                <select id="paramWeightDecay" class="config-select">
+                                    <option value="0.0">0.0 (None)</option>
+                                    <option value="0.01" selected>0.01 (Standard stability)</option>
+                                    <option value="0.05">0.05 (Higher generalization)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pillar 3: Precision & Context Window -->
+                    <div class="card config-card">
+                        <div class="config-card-header">
+                            <div class="config-card-icon">🎛️</div>
+                            <div>
+                                <h4 class="config-card-title">Precision &amp; Context Window</h4>
+                                <span class="config-card-desc">Quantization format and token sequence ceiling</span>
+                            </div>
+                        </div>
+                        <div class="config-card-body">
+                            <div class="hyperparam-field">
+                                <label for="paramQuantization">Quantization &amp; Precision</label>
+                                <select id="paramQuantization" class="config-select">
+                                    <option value="4bit" selected>4-bit QLoRA (NF4) · 75% VRAM Reduction (Recommended)</option>
+                                    <option value="8bit">8-bit Int8 · Balanced Speed &amp; Precision</option>
+                                    <option value="16bit">16-bit Float (bfloat16 / fp16) · Full Precision</option>
+                                </select>
+                                <span class="field-subtext">4-bit QLoRA preserves &gt;99% of 16-bit performance on consumer GPUs.</span>
+                            </div>
+
+                            <div class="hyperparam-field">
+                                <label for="paramMaxSeqLen">Max Sequence Length</label>
+                                <select id="paramMaxSeqLen" class="config-select">
+                                    <option value="512">512 tokens (Short classification/QA)</option>
+                                    <option value="1024">1,024 tokens (Standard chats)</option>
+                                    <option value="2048" selected>2,048 tokens (Long context / Multi-turn)</option>
+                                    <option value="4096">4,096 tokens (Extended documents / Code)</option>
+                                </select>
+                                <span class="field-subtext">Sequences longer than this ceiling will be safely truncated.</span>
+                            </div>
+
+                            <div class="checkbox-option-box">
+                                <label class="checkbox-custom-label">
+                                    <input type="checkbox" id="paramGradCheckpoint" checked>
+                                    <span class="checkbox-custom-mark"></span>
+                                    <div class="checkbox-content">
+                                        <span class="checkbox-title">Gradient Checkpointing</span>
+                                        <span class="checkbox-desc">Saves ~60% VRAM by recomputing activations during backward pass.</span>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pillar 4: Validation & Accuracy Guardrails -->
+                    <div class="card config-card">
+                        <div class="config-card-header">
+                            <div class="config-card-icon">🛡️</div>
+                            <div>
+                                <h4 class="config-card-title">Validation &amp; Quality Guardrails</h4>
+                                <span class="config-card-desc">Loss tracking, train/test split &amp; best checkpointing</span>
+                            </div>
+                        </div>
+                        <div class="config-card-body">
+                            <div class="hyperparam-field">
+                                <label for="paramValSplit">Train / Validation Split</label>
+                                <select id="paramValSplit" class="config-select">
+                                    <option value="5">5% Eval / 95% Train (Large datasets &gt;5k)</option>
+                                    <option value="10" selected>10% Eval / 90% Train (Standard Recommended)</option>
+                                    <option value="15">15% Eval / 85% Train (Thorough Validation)</option>
+                                    <option value="20">20% Eval / 80% Train (Small datasets)</option>
+                                </select>
+                                <span class="field-subtext">Held-out validation set evaluates real generalization without overfitting.</span>
+                            </div>
+
+                            <div class="checkbox-option-box">
+                                <label class="checkbox-custom-label">
+                                    <input type="checkbox" id="paramSaveBest" checked>
+                                    <span class="checkbox-custom-mark"></span>
+                                    <div class="checkbox-content">
+                                        <span class="checkbox-title">Save Best Model Checkpoint</span>
+                                        <span class="checkbox-desc">Automatically saves adapter with the lowest validation loss.</span>
+                                    </div>
+                                </label>
+                            </div>
+
+                            <div class="checkbox-option-box">
+                                <label class="checkbox-custom-label">
+                                    <input type="checkbox" id="paramEarlyStop" checked>
+                                    <span class="checkbox-custom-mark"></span>
+                                    <div class="checkbox-content">
+                                        <span class="checkbox-title">Early Stopping Guardrail</span>
+                                        <span class="checkbox-desc">Halts training early if validation loss fails to improve for 2 epochs.</span>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Real-Time Hardware Telemetry & VRAM Gauge -->
+                <div class="card vram-telemetry-card" id="configVramCard">
+                    <div class="vram-telemetry-header">
+                        <div class="vram-title-group">
+                            <span class="vram-icon">🖥️</span>
+                            <div>
+                                <h4 class="vram-title">Hardware Feasibility &amp; VRAM Prediction</h4>
+                                <span class="vram-subtitle" id="vramSubtitle">Calculating memory profile for current hyperparameters...</span>
+                            </div>
+                        </div>
+                        <div class="vram-status-badge safe" id="vramStatusBadge">
+                            <span class="badge-dot"></span>
+                            <span id="vramStatusText">Safe · Fits in VRAM</span>
+                        </div>
+                    </div>
+
+                    <div class="vram-bar-container">
+                        <div class="vram-bar-track">
+                            <div class="vram-bar-fill" id="vramBarFill" style="width: 65%;"></div>
+                        </div>
+                        <div class="vram-bar-meta">
+                            <span id="vramEstimateText">Est. Peak VRAM: <strong>2.8 GB</strong> / 4.0 GB Available (NVIDIA T1200)</span>
+                            <span id="vramSafetyText" class="safety-tag safe">Headroom: ~1.2 GB</span>
+                        </div>
+                    </div>
+
+                    <div class="vram-telemetry-grid">
+                        <div class="telemetry-pill">
+                            <span class="telemetry-pill-label">Effective Batch Size</span>
+                            <span class="telemetry-pill-val" id="telemetryEffectiveBatch">8 (2 &times; 4)</span>
+                        </div>
+                        <div class="telemetry-pill">
+                            <span class="telemetry-pill-label">Est. Training Time</span>
+                            <span class="telemetry-pill-val" id="telemetryEstTime">~8 - 12 min</span>
+                        </div>
+                        <div class="telemetry-pill">
+                            <span class="telemetry-pill-label">Trainable Parameters</span>
+                            <span class="telemetry-pill-val" id="telemetryTrainablePct">~0.42% (~18M)</span>
+                        </div>
+                        <div class="telemetry-pill">
+                            <span class="telemetry-pill-label">Quantization Mode</span>
+                            <span class="telemetry-pill-val" id="telemetryQuantMode">4-bit QLoRA NF4</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navigation Action Bar -->
+                <div class="config-action-bar">
+                    <button type="button" class="btn btn-ghost" id="backToUpload">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="19" y1="12" x2="5" y2="12"></line>
+                            <polyline points="12 19 5 12 12 5"></polyline>
+                        </svg>
+                        Back to Dataset
+                    </button>
+                    <button type="button" class="btn btn-primary btn-large glow-btn" id="continueToRecBtn">
+                        Continue to Model Recommendation
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Step 3: Recommendation Studio -->
+            <section class="step-content" id="step3">
+                <div class="content-header centered">
+                    <div class="header-badge glow-badge">Step 3 · Model Intelligence Studio</div>
+                    <h1>Model Recommendation Studio</h1>
+                    <p id="recSubtitle">AI-engineered multi-factor scoring matching your dataset and target deployment to optimal SLMs</p>
+                    
+                    <!-- Top Intelligence Context Strip -->
+                    <div class="rec-context-strip" id="recContextStrip">
+                        <div class="context-strip-item">
+                            <span class="context-strip-icon">🎯</span>
+                            <span class="context-strip-label">Target Task:</span>
+                            <span class="context-strip-val" id="stripTaskPill">Conversational Q&A</span>
+                        </div>
+                        <div class="context-strip-item">
+                            <span class="context-strip-icon">🚀</span>
+                            <span class="context-strip-label">Deployment:</span>
+                            <span class="context-strip-val" id="stripDeployPill">Cloud API & Ollama</span>
+                        </div>
+                        <div class="context-strip-item">
+                            <span class="context-strip-icon">📊</span>
+                            <span class="context-strip-label">Dataset Load:</span>
+                            <span class="context-strip-val" id="stripDatasetPill">55 rows (~1.4k tokens/ex)</span>
+                        </div>
+                        <div class="context-strip-item">
+                            <span class="context-strip-icon">⚡</span>
+                            <span class="context-strip-label">Detected GPU:</span>
+                            <span class="context-strip-val" id="stripGpuPill">NVIDIA T1200 (4.0 GB) · Free Colab T4 (16 GB)</span>
+                        </div>
+                        <div class="context-strip-item rec-status-chip">
+                            <span class="rec-pulse-dot"></span>
+                            <span id="stripEngineStatus">5 SOTA SLMs Evaluated</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Loading State -->
+                <div class="loading-state" id="recLoading">
+                    <div class="loading-spinner"></div>
+                    <p>Evaluating architectures, calculating VRAM footprints & scoring parameters...</p>
+                </div>
+
+                <!-- Recommendation Content -->
+                <div class="rec-content hidden" id="recContent">
+                    <!-- Hero Best Match Card -->
+                    <div class="card hero-rec-card" id="primaryRec">
+                        <div class="hero-rec-top">
+                            <div class="hero-rec-badges">
+                                <span class="rec-badge" id="recHeroBadge">⭐ Best Match · AI Recommended</span>
+                                <span class="rec-lab-badge" id="recLabBadge">Microsoft</span>
+                                <span class="rec-license-badge" id="recModelLicense">MIT License</span>
+                                <span class="rec-gated-badge" id="recModelGated">Open Access</span>
+                            </div>
+                            <div class="hero-rec-score-box">
+                                <div class="rec-score-ring" id="recScoreRing">
+                                    <svg viewBox="0 0 36 36">
+                                        <defs>
+                                            <linearGradient id="scoreGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                                <stop offset="0%" style="stop-color:#6366f1"/>
+                                                <stop offset="100%" style="stop-color:#38bdf8"/>
+                                            </linearGradient>
+                                        </defs>
+                                        <path class="score-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                                        <path class="score-fill" id="scoreCircle" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                                    </svg>
+                                    <span class="score-text" id="recScore">-</span>
+                                </div>
+                                <div class="score-confidence-label" id="recConfidence">High Fit Match</div>
+                            </div>
+                        </div>
+
+                        <div class="hero-rec-identity">
+                            <div class="hero-title-wrap">
+                                <h2 class="hero-model-title" id="recModelName">-</h2>
+                                <span class="hero-model-size" id="recModelSize">-</span>
+                            </div>
+                            <p class="hero-model-summary" id="recModelSummary">High-performance SLM optimized for efficient instruction following and fine-tuning.</p>
+                        </div>
+
+                        <!-- 3-Factor Multi-Pillar Score Breakdown -->
+                        <div class="score-breakdown-section">
+                            <div class="score-breakdown-title">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                                </svg>
+                                <span>Multi-Factor AI Scoring Breakdown</span>
+                                <span class="breakdown-hint">Weighted across Task Fit (50%), Dataset Size (30%), Output Complexity (20%)</span>
+                            </div>
+                            <div class="score-breakdown-grid">
+                                <div class="breakdown-pillar">
+                                    <div class="pillar-header">
+                                        <span class="pillar-label">Task Fit Alignment</span>
+                                        <span class="pillar-score" id="scoreValTask">48 / 50</span>
+                                    </div>
+                                    <div class="pillar-bar-track">
+                                        <div class="pillar-bar-fill fill-task" id="scoreBarTask" style="width: 96%"></div>
+                                    </div>
+                                    <span class="pillar-desc">Reasoning & Q&A specialization</span>
+                                </div>
+                                <div class="breakdown-pillar">
+                                    <div class="pillar-header">
+                                        <span class="pillar-label">Dataset Scalability</span>
+                                        <span class="pillar-score" id="scoreValSize">28 / 30</span>
+                                    </div>
+                                    <div class="pillar-bar-track">
+                                        <div class="pillar-bar-fill fill-size" id="scoreBarSize" style="width: 93%"></div>
+                                    </div>
+                                    <span class="pillar-desc">Prevents overfitting on small/medium sets</span>
+                                </div>
+                                <div class="breakdown-pillar">
+                                    <div class="pillar-header">
+                                        <span class="pillar-label">Output & Context Fit</span>
+                                        <span class="pillar-score" id="scoreValOutput">18 / 20</span>
+                                    </div>
+                                    <div class="pillar-bar-track">
+                                        <div class="pillar-bar-fill fill-output" id="scoreBarOutput" style="width: 90%"></div>
+                                    </div>
+                                    <span class="pillar-desc">Handles long response & token density</span>
+                                </div>
+                                <div class="breakdown-pillar">
+                                    <div class="pillar-header">
+                                        <span class="pillar-label">Multi-Turn Dialogue Bonus</span>
+                                        <span class="pillar-score" id="scoreValBonus">+10 pts</span>
+                                    </div>
+                                    <div class="pillar-bar-track">
+                                        <div class="pillar-bar-fill fill-bonus" id="scoreBarBonus" style="width: 100%"></div>
+                                    </div>
+                                    <span class="pillar-desc">Chat template & conversation memory</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Architectural Strengths & Specifications -->
+                        <div class="hero-specs-row">
+                            <div class="hero-strengths-box">
+                                <h4 class="box-subheading">Core Architectural Strengths</h4>
+                                <div class="strengths-pill-grid" id="recReasons">
+                                    <!-- Populated via JS -->
+                                </div>
+                            </div>
+
+                            <div class="hero-benchmarks-box">
+                                <h4 class="box-subheading">Standard Benchmark Baselines</h4>
+                                <div class="benchmark-pills-wrap">
+                                    <div class="benchmark-pill">
+                                        <span class="bench-label">MMLU (Knowledge)</span>
+                                        <strong class="bench-val" id="recMmlu">75.8%</strong>
+                                    </div>
+                                    <div class="benchmark-pill">
+                                        <span class="bench-label">GSM8K (Reasoning)</span>
+                                        <strong class="bench-val" id="recGsm8k">84.6%</strong>
+                                    </div>
+                                    <div class="benchmark-pill">
+                                        <span class="bench-label">HumanEval (Code)</span>
+                                        <strong class="bench-val" id="recHumanEval">68.2%</strong>
+                                    </div>
+                                    <div class="benchmark-pill">
+                                        <span class="bench-label">Context Window</span>
+                                        <strong class="bench-val" id="recContext">128K</strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Hardware Feasibility Verdict -->
+                        <div class="hardware-verdict-banner" id="recHardwareVerdict">
+                            <div class="verdict-item local-gpu-verdict">
+                                <span class="verdict-icon">💻</span>
+                                <div class="verdict-info">
+                                    <span class="verdict-title">Local NVIDIA T1200 (4.0 GB VRAM) Feasibility:</span>
+                                    <span class="verdict-detail" id="recLocalVerdict">✅ Fits with 4-bit QLoRA (~2.8 GB VRAM, 1.2 GB safety margin)</span>
+                                </div>
+                            </div>
+                            <div class="verdict-item cloud-gpu-verdict">
+                                <span class="verdict-icon">☁️</span>
+                                <div class="verdict-info">
+                                    <span class="verdict-title">Google Colab Free T4 (16 GB VRAM):</span>
+                                    <span class="verdict-detail" id="recColabVerdict">✅ 100% Compatible · Unsloth accelerated ~12 min training</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Model Family & Capability Filter Tabs -->
+                    <div class="model-filter-section">
+                        <div class="filter-header-wrap">
+                            <div class="filter-title-group">
+                                <h3>Explore Evaluated Model Architectures</h3>
+                                <span class="filter-subtitle">Compare performance, parameters, licensing, and 1-click select alternative models</span>
+                            </div>
+                            <div class="model-filter-chips" id="modelFilterTabs">
+                                <button type="button" class="filter-chip active" data-filter="all">All Models (5)</button>
+                                <button type="button" class="filter-chip" data-filter="edge">⚡ Lightweight & Edge (&lt;3B)</button>
+                                <button type="button" class="filter-chip" data-filter="reasoning">🧠 High Reasoning & Q&A</button>
+                                <button type="button" class="filter-chip" data-filter="multilingual">🌐 Multilingual & Code</button>
+                                <button type="button" class="filter-chip" data-filter="permissive">🏢 Permissive (Apache 2.0 / MIT)</button>
+                            </div>
+                        </div>
+
+                        <!-- 5-Model Interactive Showcase Cards -->
+                        <div class="model-showcase-grid" id="modelShowcaseGrid">
+                            <!-- Populated dynamically via JS -->
+                        </div>
+                    </div>
+
+                    <!-- Side-by-Side Model Comparison Matrix Table -->
+                    <div class="card model-matrix-card" id="modelMatrixCard">
+                        <div class="matrix-header">
+                            <div class="matrix-title-group">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                                    <path d="M2 17l10 5 10-5M2 12l10 5 10-5"></path>
+                                </svg>
+                                <h3>Full Side-by-Side Architectural Matrix</h3>
+                            </div>
+                            <span class="matrix-subtitle">Objective side-by-side technical specs, hardware footprint, and licensing breakdown</span>
+                        </div>
+                        <div class="matrix-table-wrap">
+                            <table class="matrix-table" id="matrixTable">
+                                <thead>
+                                    <tr>
+                                        <th>Model & Creator</th>
+                                        <th>Params</th>
+                                        <th>Match Fit</th>
+                                        <th>Context Window</th>
+                                        <th>QLoRA VRAM (4-bit)</th>
+                                        <th>MMLU / GSM8K</th>
+                                        <th>License</th>
+                                        <th>Ollama Tag</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="matrixTableBody">
+                                    <!-- Populated dynamically via JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Local Ollama & Deployment Readiness Hub -->
+                    <div class="card ollama-readiness-card" id="ollamaReadinessHub">
+                        <div class="ollama-readiness-header">
+                            <div class="ollama-title-group">
+                                <span class="ollama-icon">🦙</span>
+                                <div>
+                                    <h4>Local Ollama & Production Deployment Hub</h4>
+                                    <p class="ollama-subtitle">Instantly test, deploy, and verify the selected model locally or export for inference servers</p>
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-secondary btn-small" id="openOllamaConfigFromRecBtn" onclick="openApiConfigModal()">
+                                ⚙️ Configure Providers & API Keys
+                            </button>
+                        </div>
+                        <div class="ollama-readiness-body">
+                            <div class="ollama-command-wrap">
+                                <span class="ollama-cmd-label">Quick Run via Local Ollama CLI:</span>
+                                <div class="ollama-cmd-box">
+                                    <code id="ollamaRunCmd">ollama run phi4-mini</code>
+                                    <button type="button" class="btn-copy-cmd" id="copyOllamaCmdBtn" title="Copy Command">📋 Copy</button>
+                                </div>
+                            </div>
+                            <div class="ollama-readiness-tags">
+                                <span class="readiness-tag">✅ GGUF Q4_K_M Compatible</span>
+                                <span class="readiness-tag">✅ In-App LoRA Training Ready</span>
+                                <span class="readiness-tag">✅ Hugging Face Hub Push Ready</span>
+                                <span class="readiness-tag">✅ 1-Click Colab Notebook Export</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Alternative Model Details Modal (Kept for rich modal exploration) -->
+                <div class="modal-overlay hidden" id="altModelModal">
+                    <div class="modal-content alt-model-modal">
+                        <div class="modal-header">
+                            <div class="modal-model-info">
+                                <h3 id="altModalModelName">-</h3>
+                                <span class="modal-model-size" id="altModalModelSize">-</span>
+                            </div>
+                            <div class="modal-score-ring">
+                                <svg viewBox="0 0 36 36" width="60" height="60">
+                                    <path class="score-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                                    <path class="score-fill" id="altModalScoreCircle" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                                </svg>
+                                <span class="modal-score-text" id="altModalScore">-</span>
+                            </div>
+                        </div>
+                        <div class="modal-body">
+                            <div class="modal-section">
+                                <h4>Architectural Strengths & Why Choose This Model:</h4>
+                                <div class="modal-reasons" id="altModalReasons"></div>
+                            </div>
+                            <div class="modal-section modal-specs-grid">
+                                <div class="modal-spec">
+                                    <span class="spec-label">Context Window:</span>
+                                    <strong id="altModalContext">-</strong>
+                                </div>
+                                <div class="modal-spec">
+                                    <span class="spec-label">QLoRA VRAM (4-bit):</span>
+                                    <strong id="altModalVram">-</strong>
+                                </div>
+                                <div class="modal-spec">
+                                    <span class="spec-label">License:</span>
+                                    <strong id="altModalLicense">-</strong>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-ghost" id="altModalCancel">Keep Current Selection</button>
+                            <button type="button" class="btn btn-primary" id="altModalConfirm">Use This Model for Fine-Tuning</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- What Happens Next -->
+                <div class="card training-info-card collapsed">
+                    <div class="training-info-header" id="trainingInfoToggle">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                            <path d="M2 17l10 5 10-5M2 12l10 5 10-5"></path>
+                        </svg>
+                        <h3>What Happens Next: Training & Deployment Workflow</h3>
+                        <svg class="toggle-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </div>
+                    <div class="training-info-content" id="trainingInfoContent">
+                        <!-- Dual Path Training: In-App or Colab -->
+                        <div class="lora-section">
+                            <div class="section-header">
+                                <span class="section-icon">⚡</span>
+                                <h4>Dual Fine-Tuning Pathways</h4>
+                            </div>
+                            <p class="section-description">Choose how you wish to execute training in Step 4:</p>
+                            <div class="lora-explanation">
+                                <span class="explanation-icon">💻</span>
+                                <div class="explanation-text">
+                                    <strong>In-App Local Training:</strong> Train directly on your machine with real-time loss graphs, GPU VRAM monitoring, and immediate export to local Ollama or GGUF.
+                                </div>
+                            </div>
+                            <div class="lora-explanation" style="margin-top: 12px;">
+                                <span class="explanation-icon">📓</span>
+                                <div class="explanation-text">
+                                    <strong>One-Click Google Colab Notebook:</strong> Fully pre-configured with Unsloth 4-bit LoRA, embedded dataset, and zero cloud setup on a free Google T4 GPU.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Training Details -->
+                        <div class="export-section">
+                            <div class="section-header">
+                                <span class="section-icon">🚀</span>
+                                <h4>Unsloth Optimization Benefits</h4>
+                            </div>
+                            <div class="export-formats-grid">
+                                <div class="export-format-card">
+                                    <div class="export-format-header">
+                                        <span class="export-icon">⚡</span>
+                                        <span class="export-label">2x Faster</span>
+                                    </div>
+                                    <div class="export-details">
+                                        <div class="export-desc">Manual Triton kernel optimization</div>
+                                    </div>
+                                </div>
+                                <div class="export-format-card">
+                                    <div class="export-format-header">
+                                        <span class="export-icon">💾</span>
+                                        <span class="export-label">70% Less VRAM</span>
+                                    </div>
+                                    <div class="export-details">
+                                        <div class="export-desc">Fits consumer 4GB & free GPUs</div>
+                                    </div>
+                                </div>
+                                <div class="export-format-card">
+                                    <div class="export-format-header">
+                                        <span class="export-icon">🎯</span>
+                                        <span class="export-label">Zero Accuracy Loss</span>
+                                    </div>
+                                    <div class="export-details">
+                                        <div class="export-desc">Exact gradient precision matching</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Bar -->
+                <div class="action-bar rec-action-bar">
+                    <button type="button" class="btn btn-ghost" id="backToQuestions">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="19" y1="12" x2="5" y2="12"></line>
+                            <polyline points="12 19 5 12 12 5"></polyline>
+                        </svg>
+                        Back to Configuration
+                    </button>
+                    <div class="active-model-footer-summary" id="recActiveModelSummary">
+                        <span class="summary-prefix">Active Model:</span>
+                        <strong class="summary-model-name" id="footerActiveModelName">Phi-4 Mini (3.8B)</strong>
+                        <span class="summary-pill" id="footerActiveModelFit">96% Match</span>
+                    </div>
+                    <button type="button" class="btn btn-primary btn-large glow-btn" id="startTrainingBtn">
+                        <span id="startTrainingBtnText">Continue to Train Your Model</span>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Step 4: Training -->
+            <section class="step-content" id="step4">
+                <div class="content-header centered">
+                    <div class="header-badge">Step 4</div>
+                    <h1>Train Your Model</h1>
+                    <p>Choose how you want to train your model</p>
+                </div>
+
+                <!-- Active Staged Model Hero Banner -->
+                <div class="staged-model-hero" id="stagedModelHero">
+                    <div class="hero-left">
+                        <div class="hero-model-pill">
+                            <span class="pulse-dot"></span>
+                            <span id="stagedModelStatus">Ready for Fine-Tuning</span>
+                        </div>
+                        <h2 class="hero-model-title" id="stagedModelTitle">Phi-4 Mini (3.8B)</h2>
+                        <p class="hero-model-desc" id="stagedModelDesc">
+                            Architecture: SLM Transformer · 128k Context Window · LoRA / QLoRA 4-bit Supported
+                        </p>
+                    </div>
+                    <div class="hero-specs-row">
+                        <div class="hero-spec-pill">
+                            <span class="spec-label">Epochs</span>
+                            <span class="spec-val" id="stagedSpecEpochs">3 Epochs</span>
+                        </div>
+                        <div class="hero-spec-pill">
+                            <span class="spec-label">Batch Size</span>
+                            <span class="spec-val" id="stagedSpecBatch">4 per device</span>
+                        </div>
+                        <div class="hero-spec-pill">
+                            <span class="spec-label">LoRA Profile</span>
+                            <span class="spec-val" id="stagedSpecLora">r=16, α=32</span>
+                        </div>
+                        <div class="hero-spec-pill">
+                            <span class="spec-label">Learning Rate</span>
+                            <span class="spec-val" id="stagedSpecLr">2.0e-4 (Cosine)</span>
+                        </div>
+                        <div class="hero-spec-pill highlight">
+                            <span class="spec-label">Local Hardware</span>
+                            <span class="spec-val" id="stagedSpecHardware">NVIDIA T1200 4GB Ready</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Training Options -->
+                <div id="trainingOptions">
+                    <div class="training-options-grid">
+                        <!-- Option 1: In-App Training (Featured / User Requested) -->
+                        <div class="train-option-card featured">
+                            <div class="train-feature-badge">⚡ Recommended · Instant</div>
+                            <div class="train-card-icon">💻</div>
+                            <h3 class="train-card-title">Train In-App</h3>
+                            <p class="train-card-desc">Fine-tune directly inside Quantune in the background with live monitoring.</p>
+                            <ul class="train-card-features">
+                                <li>
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                    Runs in background
+                                </li>
+                                <li>
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                    Live loss curve & terminal logs
+                                </li>
+                                <li>
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                    Immediate testing in Testing Studio
+                                </li>
+                            </ul>
+                            <div class="model-naming-group" style="margin-top: 14px; margin-bottom: 14px; text-align: left;">
+                                <label for="customModelNameInput" style="display: block; font-size: 12px; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px;">
+                                    🏷️ Model Name / Version Label:
+                                </label>
+                                <input type="text" id="customModelNameInput" class="form-input custom-model-name-input" placeholder="e.g. Islamic Guidance SLM v1" style="width: 100%; box-sizing: border-box; padding: 9px 12px; border-radius: 8px; font-size: 13px;" />
+                                <span style="font-size: 11px; color: var(--text-tertiary); margin-top: 4px; display: block;">Identifies your fine-tuned checkpoint in the Vault and Testing Studio.</span>
+                            </div>
+                            <button class="btn btn-primary btn-full" id="startInAppTrainBtn" type="button" onclick="startInAppTraining()">
+                                <span class="btn-text">Start In-App Training</span>
+                                <span class="btn-loader hidden"></span>
+                            </button>
+                        </div>
+
+                        <!-- Option 2: Colab Option -->
+                        <div class="train-option-card">
+                            <div class="train-card-icon">
+                                <img src="https://colab.research.google.com/img/colab_favicon_256px.png" alt="Colab" width="44" height="44">
+                            </div>
+                            <h3 class="train-card-title">Google Colab</h3>
+                            <p class="train-card-desc">Train with free T4 GPU using un-gated Unsloth 4-bit mirrors.</p>
+                            <ul class="train-card-features">
+                                <li>
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                    Free T4 GPU (15GB VRAM)
+                                </li>
+                                <li>
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                    Dataset embedded in notebook
+                                </li>
+                                <li>
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                    Just click "Run All"
+                                </li>
+                            </ul>
+                            <button class="btn btn-secondary btn-full" id="openColabBtn" type="button">
+                                <span class="btn-text">Get Colab Notebook</span>
+                                <span class="btn-loader hidden"></span>
+                            </button>
+                        </div>
+
+                        <!-- Option 3: Download Package Option -->
+                        <div class="train-option-card">
+                            <div class="train-card-icon">
+                                <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                    <polyline points="7 10 12 15 17 10"></polyline>
+                                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                                </svg>
+                            </div>
+                            <h3 class="train-card-title">Download Package</h3>
+                            <p class="train-card-desc">Get training scripts & configuration for your own hardware.</p>
+                            <ul class="train-card-features">
+                                <li>
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                    Full control over training
+                                </li>
+                                <li>
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                    Self-hosted GPU training
+                                </li>
+                                <li>
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                    Standard Hugging Face formats
+                                </li>
+                            </ul>
+                            <button class="btn btn-secondary btn-full" id="generateBtn" type="button">
+                                <span class="btn-text">Download Package (.zip)</span>
+                                <span class="btn-loader hidden"></span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Live In-App Training Monitor (Hidden initially) -->
+                    <div class="training-monitor-card hidden" id="trainingMonitorCard">
+                        <div class="monitor-header">
+                            <div>
+                                <h3 style="margin: 0 0 4px 0; font-size: 18px; font-weight: 800;">In-App Training Monitor</h3>
+                                <span style="font-size: 12px; color: var(--text-secondary);" id="monitorModelLabel">Training model...</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <div class="monitor-status-pill" id="monitorStatusPill">
+                                    <span class="pulse-dot"></span>
+                                    <span id="monitorStatusText">Running</span>
+                                </div>
+                                <button class="btn btn-ghost btn-small" id="cancelTrainBtn" type="button" style="color: var(--text-tertiary);">Cancel</button>
+                            </div>
+                        </div>
+
+                        <!-- Progress Track -->
+                        <div class="training-progress-track">
+                            <div class="training-progress-bar" id="trainingProgressBar"></div>
+                        </div>
+
+                        <!-- Telemetry Stats -->
+                        <div class="training-stats-grid">
+                            <div class="train-stat-pill">
+                                <span class="train-stat-label">Progress</span>
+                                <span class="train-stat-val" id="trainStatProgress">0%</span>
+                            </div>
+                            <div class="train-stat-pill">
+                                <span class="train-stat-label">Epoch</span>
+                                <span class="train-stat-val" id="trainStatEpoch">0 / 3</span>
+                            </div>
+                            <div class="train-stat-pill">
+                                <span class="train-stat-label">Step</span>
+                                <span class="train-stat-val" id="trainStatStep">0 / 0</span>
+                            </div>
+                            <div class="train-stat-pill">
+                                <span class="train-stat-label">Current Loss</span>
+                                <span class="train-stat-val text-accent" id="trainStatLoss">2.4500</span>
+                            </div>
+                            <div class="train-stat-pill">
+                                <span class="train-stat-label">Time Remaining</span>
+                                <span class="train-stat-val" id="trainStatEta">Calculating...</span>
+                            </div>
+                        </div>
+
+                        <!-- Live SVG Loss Curve -->
+                        <div class="loss-chart-box">
+                            <div class="loss-chart-title">
+                                <span>Optimization Loss Curve (Step-by-Step)</span>
+                                <span id="lossChartDelta" style="color: #10B981;">Converging</span>
+                            </div>
+                            <svg class="loss-svg-chart" id="lossSvgChart" viewBox="0 0 600 120">
+                                <defs>
+                                    <linearGradient id="lossGrad" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="0%" stop-color="#6366F1" stop-opacity="0.3"/>
+                                        <stop offset="100%" stop-color="#6366F1" stop-opacity="0.0"/>
+                                    </linearGradient>
+                                </defs>
+                                <path id="lossAreaPath" d="M 0 120 L 600 120" fill="url(#lossGrad)"/>
+                                <path id="lossLinePath" d="M 0 30 L 600 90" fill="none" stroke="#6366F1" stroke-width="2.5" stroke-linecap="round"/>
+                            </svg>
+                        </div>
+
+                        <!-- Real-time Console Logs -->
+                        <div class="console-log-box" id="consoleLogBox">
+                            <div class="log-line">[SYSTEM] Ready to stream training logs...</div>
+                        </div>
+
+                        <!-- Success CTA (revealed upon completion) -->
+                        <div id="trainCompletedCta" class="hidden" style="margin-top: 20px; text-align: center; padding-top: 16px; border-top: 1px solid var(--border);">
+                            <h4 style="color: #34D399; margin: 0 0 8px 0; font-size: 16px;">🎉 Fine-Tuning Complete! Adapter Saved to Local Checkpoint.</h4>
+                            <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 14px;">Your model is loaded and ready for live verification.</p>
+                            <button class="btn btn-primary" id="proceedToTestBtn" type="button" style="padding: 10px 24px; font-weight: 700;">
+                                Test Fine-Tuned Model in Studio →
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Previous Trained Models & Checkpoints Vault -->
+                    <div class="models-vault-container" id="modelsVaultContainer">
+                        <div class="vault-header">
+                            <div>
+                                <h3 class="vault-title">🏺 Previous Trained Models & Checkpoints Vault</h3>
+                                <p class="vault-subtitle">Review previously trained models, inspect configurations and loss curves, download LoRA adapters, or immediately test any checkpoint in the Studio.</p>
+                            </div>
+                            <div class="vault-header-actions">
+                                <span class="vault-count-badge" id="vaultCountBadge">0 Models</span>
+                                <button class="btn btn-ghost btn-small" id="refreshVaultBtn" type="button" onclick="loadTrainedModelsVault()">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="23 4 23 10 17 10"></polyline>
+                                        <polyline points="1 20 1 14 7 14"></polyline>
+                                        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                                    </svg>
+                                    Refresh
+                                </button>
+                                <button class="btn btn-ghost btn-small text-danger" id="cleanAllVaultBtn" type="button" onclick="cleanAllTrainedRuns()" style="color: #ef4444; border-color: rgba(239, 68, 68, 0.35);" title="Clean up all saved checkpoints from disk">
+                                    🗑️ Clean Up All
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Grid of saved models -->
+                        <div class="vault-grid" id="vaultRunsGrid">
+                            <div class="vault-loading-skeleton">Loading past checkpoints...</div>
+                        </div>
+                    </div>
+
+                    <div class="action-bar">
+                        <button class="btn btn-ghost" id="backToRec">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="19" y1="12" x2="5" y2="12"></line>
+                                <polyline points="12 19 5 12 12 5"></polyline>
+                            </svg>
+                            Back
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Notebook Ready -->
+                <div id="notebookReady" class="hidden">
+                    <div class="card success-card">
+                        <div class="success-icon">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                            </svg>
+                        </div>
+                        <h2>Notebook Downloaded!</h2>
+                        <p>Google Colab opened in a new tab</p>
+
+                        <div class="colab-instructions">
+                            <div class="instruction-step">
+                                <span class="step-num">1</span>
+                                <span>In Colab: <strong>File → Upload notebook</strong></span>
+                            </div>
+                            <div class="instruction-step">
+                                <span class="step-num">2</span>
+                                <span>Select the downloaded <code>.ipynb</code> file</span>
+                            </div>
+                            <div class="instruction-step">
+                                <span class="step-num">3</span>
+                                <span><strong>Runtime → Change runtime type → T4 GPU</strong></span>
+                            </div>
+                            <div class="instruction-step">
+                                <span class="step-num">4</span>
+                                <span>Click <strong>Runtime → Run all</strong></span>
+                            </div>
+                        </div>
+
+                        <div class="notebook-actions">
+                            <a class="btn btn-secondary" id="downloadNotebookBtn" href="#" download>
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                    <polyline points="7 10 12 15 17 10"></polyline>
+                                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                                </svg>
+                                Download Again
+                            </a>
+                            <a id="openColabAgainBtn" class="btn btn-primary" href="https://colab.research.google.com/" target="_blank">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                                    <polyline points="15 3 21 3 21 9"></polyline>
+                                    <line x1="10" y1="14" x2="21" y2="3"></line>
+                                </svg>
+                                Open Colab Again
+                            </a>
+                            <button class="btn btn-secondary" id="testModelFromNotebook" type="button">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                                </svg>
+                                Test Your Model
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Download Package Ready -->
+                <div id="downloadPackage" class="hidden">
+                    <div class="card success-card">
+                        <div class="success-icon">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="7 10 12 15 17 10"></polyline>
+                                <line x1="12" y1="15" x2="12" y2="3"></line>
+                            </svg>
+                        </div>
+                        <h2>Package Ready!</h2>
+                        <p>Your training package has been generated.</p>
+                        <div class="package-contents">
+                            <code>config.json</code>
+                            <code>train.py</code>
+                            <code>requirements.txt</code>
+                            <code>README.md</code>
+                        </div>
+                        <a class="btn btn-primary" id="downloadBtn" href="#">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="7 10 12 15 17 10"></polyline>
+                                <line x1="12" y1="15" x2="12" y2="3"></line>
+                            </svg>
+                            Download Package (.zip)
+                        </a>
+                        <button class="btn btn-secondary" id="testModelFromPackage" type="button">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                            </svg>
+                            Test Your Model
+                        </button>
+                    </div>
+                </div>
+
+                <button class="btn btn-ghost start-over" id="startOver">Start New Project</button>
+            </section>
+
+            <!-- Step 5: Test Your Model -->
+            <section class="step-content" id="step5">
+                <div class="content-header centered">
+                    <div class="header-badge">Step 5</div>
+                    <h1>Test Your Model</h1>
+                    <p>Chat with the fine-tune you just trained, evaluate accuracy, and refine the dataset</p>
+                </div>
+
+                <!-- Evaluation & Accuracy Scorecard -->
+                <div class="evaluation-scorecard" id="evaluationScorecard">
+                    <div class="scorecard-metric primary">
+                        <div class="metric-label">Test Accuracy</div>
+                        <div class="metric-value" id="scorecardAccuracy">--%</div>
+                        <div class="metric-sub" id="scorecardAccuracySub">0 / 0 approved</div>
+                    </div>
+                    <div class="scorecard-divider"></div>
+                    <div class="scorecard-metric">
+                        <div class="metric-label">Prompts Tested</div>
+                        <div class="metric-value" id="scorecardTotal">0</div>
+                        <div class="metric-sub">evaluations run</div>
+                    </div>
+                    <div class="scorecard-metric">
+                        <div class="metric-label">Approved (👍)</div>
+                        <div class="metric-value text-success" id="scorecardApproved">0</div>
+                        <div class="metric-sub">passed ground truth</div>
+                    </div>
+                    <div class="scorecard-metric">
+                        <div class="metric-label">Flagged (👎)</div>
+                        <div class="metric-value text-error" id="scorecardFlagged">0</div>
+                        <div class="metric-sub">needs refinement</div>
+                    </div>
+                    <div class="scorecard-metric highlight">
+                        <div class="metric-label">Staged Corrections</div>
+                        <div class="metric-value text-accent" id="scorecardCorrections">0</div>
+                        <div class="metric-sub">ready to re-tune</div>
+                    </div>
+                </div>
+
+                <div class="playground-tabs">
+                    <button class="playground-tab active" id="tabStudio" type="button">⚡ Interactive Testing Studio</button>
+                    <button class="playground-tab" id="tabColab" type="button">Colab Playground</button>
+                    <button class="playground-tab" id="tabLocal" type="button">Local Server (Ollama / vLLM)</button>
+                </div>
+
+                <!-- ============ Panel: Interactive Testing Studio (Default) ============ -->
+                <div class="playground-panel active" id="panelStudio">
+                    <div class="testing-studio-grid">
+                        <!-- Left Column: Prompt Studio & Inference Hyperparameters -->
+                        <div class="studio-card">
+                            <div class="studio-card-head">
+                                <h4 class="studio-card-title">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                                    </svg>
+                                    Interactive Testing Studio
+                                </h4>
+                                <span class="hub-card-badge" id="studioActiveModelBadge">Model Ready</span>
+                            </div>
+
+                            <!-- Model Selector & Inference Config Toolbar -->
+                            <div class="studio-toolbar-card">
+                                <div class="studio-model-selector-row">
+                                    <div class="control-col" style="flex: 1.6;">
+                                        <label class="control-label" for="studioModelSelect">Target Model / Checkpoint</label>
+                                        <select id="studioModelSelect" class="form-select studio-select">
+                                            <option value="active_fine_tuned">✨ Fine-Tuned SLM (Active Training Run)</option>
+                                            <option value="base_model">Base SLM (Pre-Trained Unaligned Default)</option>
+                                        </select>
+                                    </div>
+                                    <div class="control-col">
+                                        <label class="control-label" for="studioTempSlider">
+                                            Temp: <span id="studioTempLabel" class="text-accent">0.7 (Balanced)</span>
+                                        </label>
+                                        <input type="range" id="studioTempSlider" class="form-range" min="0.0" max="1.5" step="0.05" value="0.7">
+                                    </div>
+                                    <div class="control-col">
+                                        <label class="control-label" for="studioTopPSlider">
+                                            Top-P: <span id="studioTopPLabel">0.90</span>
+                                        </label>
+                                        <input type="range" id="studioTopPSlider" class="form-range" min="0.1" max="1.0" step="0.05" value="0.9">
+                                    </div>
+                                    <div class="control-col">
+                                        <label class="control-label" for="studioMaxTokensSlider">
+                                            Max Tokens: <span id="studioMaxTokensLabel">256</span>
+                                        </label>
+                                        <input type="range" id="studioMaxTokensSlider" class="form-range" min="64" max="1024" step="32" value="256">
+                                    </div>
+                                </div>
+
+                                <!-- Collapsible System Prompt Override -->
+                                <details class="studio-sys-details" id="studioSysPromptDetails">
+                                    <summary class="studio-sys-summary">
+                                        <span>⚙️ System Persona & Formatting Directives (Click to edit)</span>
+                                        <span class="details-chevron">▼</span>
+                                    </summary>
+                                    <div class="studio-sys-body">
+                                        <textarea id="studioSysPromptInput" rows="2" class="form-textarea" placeholder="e.g. You are an expert Islamic scholar assistant providing authentic, accurate, and respectful guidance..."></textarea>
+                                    </div>
+                                </details>
+                            </div>
+
+                            <!-- Prompts Section -->
+                            <div class="prompt-chips-section">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                                    <span class="field-hint" style="margin: 0;">Dataset Training Prompts:</span>
+                                    <button class="btn btn-ghost btn-small" id="genUnseenPromptsBtn" type="button" style="color: #60A5FA; font-size: 11.5px; padding: 2px 8px; border: 1px dashed rgba(96,165,250,0.4);">
+                                        ✨ Test Generalization (Unseen Prompts)
+                                    </button>
+                                </div>
+                                <div class="prompt-chips-wrap" id="studioPromptChips">
+                                    <span class="prompt-chip" data-prompt="where hajj perform?">where hajj perform?</span>
+                                </div>
+                                <div class="prompt-chips-wrap unseen hidden" id="studioUnseenChips" style="margin-top: 6px;"></div>
+                            </div>
+
+                            <label class="field-label" for="studioPromptInput">Test Prompt / Instruction</label>
+                            <textarea id="studioPromptInput" class="studio-textarea" placeholder="Enter an instruction or query to test against your fine-tuned model..."></textarea>
+
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
+                                <div style="display: flex; gap: 14px; font-size: 12px; color: var(--text-tertiary);">
+                                    <span id="activeInferenceConfigSummary">Mode: <strong>Domain-Grounded SLM</strong> · TTFT: <strong>~35ms</strong></span>
+                                </div>
+                                <div class="studio-btn-row">
+                                    <button class="btn btn-ghost btn-small" id="clearStudioBtn" type="button">Clear</button>
+                                    <button class="btn btn-primary" id="runStudioTestBtn" type="button" style="padding: 8px 18px; font-weight: 700;">
+                                        <span id="runStudioBtnText">Run Inference & Test</span>
+                                        <span class="btn-loader hidden" id="studioLoader"></span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Column: Model Comparison & Verification -->
+                        <div class="studio-card">
+                            <div class="studio-card-head">
+                                <h4 class="studio-card-title">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                                        <path d="M2 17l10 5 10-5M2 12l10 5 10-5"></path>
+                                    </svg>
+                                    Side-by-Side Model Comparison
+                                </h4>
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <span id="studioGroundingBadge" class="grounding-badge">96% Domain Grounded</span>
+                                    <span id="studioInferenceSpeed" style="font-size: 12px; font-family: 'JetBrains Mono', monospace; color: #10B981;">Latency: ~120ms</span>
+                                </div>
+                            </div>
+
+                            <div class="response-comparison-box">
+                                <!-- Base SLM Output -->
+                                <div class="response-pane">
+                                    <div class="response-pane-head">
+                                        <span class="response-pane-tag base">Base SLM (Pre-Trained Default)</span>
+                                        <span style="font-size: 11px; color: var(--text-tertiary);">Standard generic completion</span>
+                                    </div>
+                                    <div class="response-pane-body" id="baseOutputText">
+                                        Run an inference prompt on the left to compare the base pre-trained model against your fine-tuned model.
+                                    </div>
+                                </div>
+
+                                <!-- Fine-Tuned SLM Output -->
+                                <div class="response-pane fine-tuned">
+                                    <div class="response-pane-head">
+                                        <span class="response-pane-tag tuned">✨ Your Fine-Tuned SLM</span>
+                                        <span style="font-size: 11px; color: #34D399; font-weight: 600;" id="domainTagBadge">Domain Aligned</span>
+                                    </div>
+                                    <div class="response-pane-body" id="tunedOutputText">
+                                        Your fine-tuned model output will appear here with domain-specific vocabulary, format, and behavior learned from your dataset.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Evaluation Action Bar -->
+                            <div style="margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+                                <span style="font-size: 12.5px; color: var(--text-secondary);">Evaluate output:</span>
+                                <div style="display: flex; gap: 8px;">
+                                    <button class="btn btn-secondary btn-small" id="studioApproveBtn" type="button" style="color: #10B981; border-color: rgba(16, 185, 129, 0.4);">
+                                        👍 Approve (Accurate)
+                                    </button>
+                                    <button class="btn btn-secondary btn-small" id="studioFlagBtn" type="button" style="color: #EF4444; border-color: rgba(239, 68, 68, 0.4);">
+                                        👎 Flag Error & Correct
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ============ Panel: local model server ============ -->
+                <div class="playground-panel hidden" id="panelLocal">
+                    <div class="playground-grid">
+
+                        <!-- Connection + parameters -->
+                        <aside class="playground-side">
+                            <div class="card setup-card">
+                                <h4 class="card-title">1 · Connect a model server</h4>
+                                <div class="server-list" id="serverList">
+                                    <div class="server-scanning"><span class="mini-spinner"></span>Scanning your machine…</div>
+                                </div>
+                                <div class="server-action-row">
+                                    <button class="btn btn-ghost btn-small" id="rescanServersBtn" type="button">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <polyline points="23 4 23 10 17 10"></polyline>
+                                            <polyline points="1 20 1 14 7 14"></polyline>
+                                            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                                        </svg>
+                                        Scan again
+                                    </button>
+                                    <button class="btn btn-ghost btn-small" id="toggleSimulatorBtn" type="button" title="Test immediately without running an external server">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                                        </svg>
+                                        Use Built-in Simulator
+                                    </button>
+                                </div>
+                                <div class="manual-url-row">
+                                    <input type="text" id="serverUrlInput" placeholder="http://localhost:11434" autocomplete="off" spellcheck="false">
+                                    <button class="btn btn-secondary btn-small" id="connectUrlBtn" type="button">Connect</button>
+                                </div>
+                                <p class="field-hint">Ollama, LM Studio, llama.cpp or the Quantune local server.</p>
+                            </div>
+
+                            <div class="card setup-card">
+                                <h4 class="card-title">2 · Pick the model</h4>
+                                <select id="modelSelect" class="model-select" disabled>
+                                    <option value="">Connect a server first</option>
+                                </select>
+                                <div class="finetune-badge hidden" id="finetuneBadge">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="20 6 9 17 4 12"></polyline>
+                                    </svg>
+                                    This looks like your fine-tune
+                                </div>
+
+                                <label class="field-label" for="systemPromptInput">System prompt</label>
+                                <textarea id="systemPromptInput" class="prompt-textarea compact" rows="3" placeholder="Optional — pre-filled from your dataset"></textarea>
+
+                                <div class="param-row">
+                                    <label class="field-label" for="temperatureInput">Temperature <span class="param-value" id="temperatureValue">0.7</span></label>
+                                    <input type="range" id="temperatureInput" min="0" max="2" step="0.1" value="0.7">
+                                </div>
+                                <div class="param-row">
+                                    <label class="field-label" for="maxTokensInput">Max new tokens</label>
+                                    <input type="number" id="maxTokensInput" class="param-number" min="1" max="4096" step="16" value="256">
+                                </div>
+                            </div>
+
+                            <div class="card setup-card collapsible-card collapsed" id="setupGuideCard">
+                                <div class="collapsible-head" id="setupGuideToggle">
+                                    <h4 class="card-title">How do I connect my fine-tune?</h4>
+                                    <svg class="toggle-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="6 9 12 15 18 9"></polyline>
+                                    </svg>
+                                </div>
+                                <div class="collapsible-body">
+                                    <div class="guide-option">
+                                        <div class="guide-option-head">Ollama <span class="guide-tag">easiest</span></div>
+                                        <p class="guide-note">In your Colab notebook, run the <strong>Export to GGUF</strong> cell, download the folder, then:</p>
+                                        <pre class="guide-commands" id="guideCommandsOllama">ollama create my-model -f Modelfile
+ollama run my-model</pre>
+                                    </div>
+                                    <div class="guide-option">
+                                        <div class="guide-option-head">Quantune local server <span class="guide-tag">no export</span></div>
+                                        <p class="guide-note">Keeps your LoRA adapter exactly as trained — from the folder you downloaded the package into:</p>
+                                        <pre class="guide-commands" id="guideCommandsServe">python serve_model.py</pre>
+                                    </div>
+                                    <p class="field-hint">Then hit <strong>Scan again</strong> — the page finds it automatically.</p>
+                                </div>
+                            </div>
+                        </aside>
+
+                        <!-- Chat -->
+                        <div class="card playground-chat">
+                            <div class="chat-header">
+                                <div class="chat-model">
+                                    <span class="chat-status-dot" id="chatStatusDot"></span>
+                                    <span id="chatModelLabel">No model connected</span>
+                                </div>
+                                <button class="btn btn-ghost btn-small" id="clearChatBtn" type="button">Clear chat</button>
+                            </div>
+
+                            <div class="chat-messages" id="chatMessages">
+                                <div class="chat-empty" id="chatEmpty">
+                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                                    </svg>
+                                    <p>Connect a model on the left, then send a message to see how your fine-tune answers.</p>
+                                </div>
+                            </div>
+
+                            <div class="dataset-prompts hidden" id="datasetPrompts">
+                                <span class="dataset-prompts-label">Try a prompt from your training data:</span>
+                                <div class="dataset-prompt-chips" id="datasetPromptChips"></div>
+                            </div>
+
+                            <div class="chat-input-row">
+                                <textarea id="chatInput" rows="1" placeholder="Connect a model to start chatting…" disabled></textarea>
+                                <button class="btn btn-primary chat-send-btn" id="sendChatBtn" type="button" disabled>
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <line x1="22" y1="2" x2="11" y2="13"></line>
+                                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                                    </svg>
+                                    Send
+                                </button>
+                                <button class="btn btn-secondary chat-send-btn hidden" id="stopChatBtn" type="button">Stop</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ============ Panel: Colab playground ============ -->
+                <div class="playground-panel hidden" id="panelColab">
+                    <div class="card colab-playground-card">
+                        <h3>Run the playground inside Colab</h3>
+                        <p>Your generated notebook ends with a <strong>Launch chat playground</strong> cell. Run it after training and it prints a public <code>*.gradio.live</code> link — paste it here to chat with the model that is still loaded in Colab. No installs, nothing to download.</p>
+                        <ol class="colab-steps">
+                            <li>Run your training notebook in Colab to completion</li>
+                            <li>Run the last cell: <strong>Launch chat playground</strong></li>
+                            <li>Copy the <code>https://…gradio.live</code> URL it prints</li>
+                            <li>Paste it below</li>
+                        </ol>
+                        <div class="colab-url-row">
+                            <input type="url" id="colabUrlInput" placeholder="https://xxxxxxxx.gradio.live" autocomplete="off" spellcheck="false">
+                            <button class="btn btn-primary" id="openColabPlaygroundBtn" type="button">Open playground</button>
+                            <button class="btn btn-secondary" id="embedColabPlaygroundBtn" type="button">Embed here</button>
+                        </div>
+                        <p class="field-hint" id="colabUrlHint">The link stays alive while that Colab cell keeps running.</p>
+                        <div class="colab-embed hidden" id="colabEmbedWrap">
+                            <iframe id="colabPlaygroundFrame" title="Colab chat playground" loading="lazy"></iframe>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ============ Panel: Quick Benchmark ============ -->
+                <div class="playground-panel hidden" id="panelQuickTest">
+                    <div class="card benchmark-card">
+                        <div class="benchmark-header">
+                            <div>
+                                <h3 class="card-title">Automated Dataset Benchmark</h3>
+                                <p class="field-hint">Test your model against sample prompts extracted from your training data, review side-by-side ground truth, and approve or correct with one click.</p>
+                            </div>
+                            <button class="btn btn-primary" id="runBenchmarkBtn" type="button">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                                </svg>
+                                Run All Benchmark Prompts
+                            </button>
+                        </div>
+                        
+                        <div class="benchmark-results" id="benchmarkResults">
+                            <div class="benchmark-empty" id="benchmarkEmpty">
+                                <p>Click "Run All Benchmark Prompts" to evaluate this model against your dataset test set.</p>
+                            </div>
+                            <div class="benchmark-list hidden" id="benchmarkList"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Floating Re-Fine Action Bar -->
+                <div class="refine-action-bar hidden" id="refineActionBar">
+                    <div class="refine-bar-content">
+                        <div class="refine-bar-info">
+                            <span class="refine-pulse-dot"></span>
+                            <div>
+                                <strong id="refineCountLabel">0 corrections staged</strong>
+                                <span class="refine-sublabel">Incorporate your feedback into the dataset and train an improved model</span>
+                            </div>
+                        </div>
+                        <div class="refine-bar-actions">
+                            <button class="btn btn-ghost btn-small" id="downloadRefinedBtn" type="button">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                    <polyline points="7 10 12 15 17 10"></polyline>
+                                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                                </svg>
+                                Export Refined (.jsonl)
+                            </button>
+                            <button class="btn btn-primary" id="triggerRefineBtn" type="button">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="23 4 23 10 17 10"></polyline>
+                                    <polyline points="1 20 1 14 7 14"></polyline>
+                                    <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                                </svg>
+                                Re-Fine Model with Feedback
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Correction Modal -->
+                <div class="modal-backdrop hidden" id="correctionModal">
+                    <div class="card modal-dialog">
+                        <div class="modal-header">
+                            <h3 class="modal-title">Correct Model Response</h3>
+                            <button class="btn-close" id="closeCorrectionModal" type="button">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="correction-prompt-preview">
+                                <label class="field-label">User Prompt</label>
+                                <div class="preview-box" id="modalPromptText"></div>
+                            </div>
+                            <div class="correction-split-view">
+                                <div class="split-col">
+                                    <label class="field-label">Model Generated Output</label>
+                                    <div class="preview-box flawed" id="modalModelOutput"></div>
+                                </div>
+                                <div class="split-col" id="modalExpectedCol">
+                                    <label class="field-label">Expected Ground Truth</label>
+                                    <div class="preview-box expected" id="modalExpectedOutput"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="correction-input-group">
+                                <label class="field-label" for="modalCorrectionInput">
+                                    What should the model have answered?
+                                    <span class="field-hint-inline">Will be added to training data</span>
+                                </label>
+                                <textarea id="modalCorrectionInput" rows="4" placeholder="Enter the ideal assistant response here..."></textarea>
+                            </div>
+                            
+                            <div class="correction-tags-group">
+                                <label class="field-label">Issue Categories</label>
+                                <div class="correction-tag-chips">
+                                    <label class="tag-checkbox"><input type="checkbox" value="hallucination"> Hallucination</label>
+                                    <label class="tag-checkbox"><input type="checkbox" value="bad_format"> Formatting Error</label>
+                                    <label class="tag-checkbox"><input type="checkbox" value="inaccurate"> Inaccurate Fact</label>
+                                    <label class="tag-checkbox"><input type="checkbox" value="too_verbose"> Too Verbose</label>
+                                    <label class="tag-checkbox"><input type="checkbox" value="tone"> Tone Mismatch</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-ghost" id="cancelCorrectionBtn" type="button">Cancel</button>
+                            <button class="btn btn-primary" id="saveCorrectionBtn" type="button">Save & Add to Re-Fine Queue</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="action-bar">
+                    <button class="btn btn-ghost" id="backFromTest" type="button">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="19" y1="12" x2="5" y2="12"></line>
+                            <polyline points="12 19 5 12 12 5"></polyline>
+                        </svg>
+                        Back to training
+                    </button>
+                    <button class="btn btn-primary" id="finishTestBtn" type="button">Start New Project</button>
+                </div>
+            </section>
+        </main>
+
+        <!-- Rich Developer Footer -->
+        <footer class="footer" style="margin-top: 4rem; border-top: 1px solid var(--border); padding: 3rem 2rem 2rem; background: var(--bg-surface);">
+            <div style="max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 2rem; margin-bottom: 2rem;">
+                <div>
+                    <a href="/" class="logo" style="display: inline-flex; align-items: center; gap: 0.5rem; text-decoration: none; margin-bottom: 0.75rem;">
+                        <img src="/static/logo.svg" alt="Quantune Logo" width="28" height="28" class="brand-logo-img">
+                        <span class="logo-text" style="font-size: 1.15rem; font-weight: 800;">Quantune</span>
+                    </a>
+                    <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6;">Automated SLM Fine-Tuning, Benchmarking & Continuous Refinement Studio.</p>
+                    <div style="margin-top: 0.75rem; font-size: 0.82rem; color: var(--text-tertiary);">
+                        Crafted with precision by <strong>Ifrahuddin Azmi</strong>
+                    </div>
+                </div>
+                <div>
+                    <h4 style="font-size: 0.92rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.85rem;">Navigation</h4>
+                    <a href="/" style="display: block; color: var(--text-secondary); font-size: 0.85rem; text-decoration: none; margin-bottom: 0.5rem;">Home Page</a>
+                    <a href="/about" style="display: block; color: var(--text-secondary); font-size: 0.85rem; text-decoration: none; margin-bottom: 0.5rem;">About & Creator</a>
+                    <a href="/dashboard" style="display: block; color: var(--text-secondary); font-size: 0.85rem; text-decoration: none; margin-bottom: 0.5rem;">Studio Dashboard</a>
+                </div>
+                <div>
+                    <h4 style="font-size: 0.92rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.85rem;">Supported SLMs</h4>
+                    <span style="display: block; color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 0.4rem;">Phi-4 Mini (3.8B)</span>
+                    <span style="display: block; color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 0.4rem;">Llama 3.2 (1B & 3B)</span>
+                    <span style="display: block; color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 0.4rem;">Mistral (7B) & Qwen 2.5</span>
+                </div>
+                <div>
+                    <h4 style="font-size: 0.92rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.85rem;">Connect with Developer</h4>
+                    <a href="https://github.com/ifrahazmi" target="_blank" rel="noopener" style="display: block; color: var(--text-secondary); font-size: 0.85rem; text-decoration: none; margin-bottom: 0.5rem;">GitHub: @ifrahazmi</a>
+                    <a href="https://www.linkedin.com/in/ifrahuddin-azmi/" target="_blank" rel="noopener" style="display: block; color: var(--text-secondary); font-size: 0.85rem; text-decoration: none; margin-bottom: 0.5rem;">LinkedIn: Ifrahuddin Azmi</a>
+                    <a href="mailto:ifrahazmi@gmail.com" style="display: block; color: var(--text-secondary); font-size: 0.85rem; text-decoration: none; margin-bottom: 0.5rem;">Email: ifrahazmi@gmail.com</a>
+                    <span style="display: inline-block; margin-top: 0.5rem; padding: 0.2rem 0.6rem; border-radius: 4px; background: rgba(16, 185, 129, 0.15); color: #10B981; font-size: 0.74rem; font-weight: 700;">MIT Open Source</span>
+                </div>
+            </div>
+            <div style="max-width: 1200px; margin: 0 auto; padding-top: 1.5rem; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; font-size: 0.8rem; color: var(--text-tertiary);">
+                <span>© 2026 Quantune · Architected by Ifrahuddin Azmi. Licensed under MIT.</span>
+                <span>Powered by Unsloth & Hugging Face PEFT</span>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Interactive Dataset Editor & Repair Studio Popup Modal -->
+    <div class="modal-overlay hidden" id="rowEditorModal">
+        <div class="modal-content modal-studio-popup">
+            <!-- Modal Header with Navigation & Mode Switcher -->
+            <div class="studio-popup-header">
+                <div class="studio-header-left">
+                    <div class="studio-badge-glow">
+                        <span class="studio-pulse-icon">🛠️</span> DATASET REPAIR STUDIO
+                    </div>
+                    <h3 id="rowEditorTitle">Edit Training Example #1</h3>
+                </div>
+
+                <!-- Center Quick Navigation Controls -->
+                <div class="studio-row-nav">
+                    <button class="btn-studio-nav" id="prevRowBtn" onclick="navToPrevRow()" type="button" title="Previous example">
+                        ◀ Prev
+                    </button>
+                    <div class="row-counter-badge">
+                        <span id="editRowCounter">1 / 55</span>
+                    </div>
+                    <button class="btn-studio-nav" id="nextRowBtn" onclick="navToNextRow()" type="button" title="Next example">
+                        Next ▶
+                    </button>
+                    <div class="jump-wrap">
+                        <label for="jumpToRowInput">#</label>
+                        <input type="number" id="jumpToRowInput" min="1" max="1000" class="jump-input" placeholder="Go" onchange="jumpToRow(this.value)">
+                    </div>
+                </div>
+
+                <!-- Mode Tabs & Close -->
+                <div class="studio-header-right">
+                    <div class="view-mode-tabs">
+                        <button class="mode-tab active" id="tabFormView" onclick="toggleStudioViewMode('form')" type="button">
+                            ✏️ Edit Specific Example
+                        </button>
+                        <button class="mode-tab" id="tabTableView" onclick="toggleStudioViewMode('table')" type="button">
+                            📋 All Examples Table
+                        </button>
+                        <button class="mode-tab" id="tabJsonView" onclick="toggleStudioViewMode('json')" type="button">
+                            💻 Raw JSONL
+                        </button>
+                    </div>
+                    <button class="modal-close" id="closeRowEditorBtn" onclick="closeStudioPopup()" type="button">&times;</button>
+                </div>
+            </div>
+
+            <div class="modal-body studio-popup-body">
+                <input type="hidden" id="editRowIndex">
+
+                <!-- Tab 1: Visual Form Single-Example Editor (ACTIVE BY DEFAULT - PREVIOUS POPUP DESIGN) -->
+                <div class="studio-single-editor-wrap" id="studioSingleEditorWrap">
+                    <!-- Live Health, Quality & What-Needs-Update Advisor Box -->
+                    <div class="editor-advisor-card" id="editorAdvisorCard">
+                        <div class="advisor-top-bar">
+                            <div class="advisor-status-group">
+                                <span class="advisor-health-icon" id="advisorHealthIcon">🟢</span>
+                                <div class="advisor-status-text">
+                                    <strong id="advisorStatusTitle">Example Readiness: 100% (High Quality)</strong>
+                                    <span id="advisorStatusSubtitle">All schema constraints, content lengths, and formatting rules passed</span>
+                                </div>
+                            </div>
+                            <div class="advisor-token-metrics">
+                                <span class="token-chip chip-sys" id="tokenChipSys">System: ~0 tok</span>
+                                <span class="token-chip chip-user" id="tokenChipUser">Prompt: ~0 tok</span>
+                                <span class="token-chip chip-asst" id="tokenChipAsst">Target: ~0 tok</span>
+                                <span class="token-chip chip-total" id="tokenChipTotal">Total: ~0 tok</span>
+                            </div>
+                        </div>
+
+                        <!-- Dynamic Required / Needs-Update Checklist -->
+                        <div class="advisor-requirements-list" id="advisorRequirementsList">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- 1-Click Quick Action & Formatting Toolbar -->
+                    <div class="studio-toolbar-bar">
+                        <div class="toolbar-group">
+                            <span class="toolbar-label">⚡ Role Presets:</span>
+                            <select class="toolbar-select" id="studioPresetSelect" onchange="applyPresetToCurrentRow(this.value)">
+                                <option value="">Insert Persona Template...</option>
+                                <option value="You are an empathetic, professional customer care specialist. Always provide clear, courteous, and step-by-step guidance.">🎧 Customer Support Specialist</option>
+                                <option value="You are a principal software engineer. Write clean, production-grade Python code with docstrings, type hints, and robust error handling.">💻 Senior Python Engineer</option>
+                                <option value="You are an expert clinical triage consultant. Provide accurate, clear medical explanations with appropriate safety disclaimers and emergency advice.">🩺 Clinical Medical Triage</option>
+                                <option value="You are a senior quantitative financial analyst. Extract key metrics and deliver structured, concise financial intelligence.">📊 Financial Market Analyst</option>
+                                <option value="You are a logical reasoning assistant. Explain your thought process step by step before providing the final answer.">🧠 Step-by-Step Reasoning (CoT)</option>
+                                <option value="You are a direct, concise assistant. Answer questions directly in 1-3 sentences without fluff.">⚡ Direct & Concise Q&A</option>
+                            </select>
+                        </div>
+
+                        <div class="toolbar-tools">
+                            <button class="tool-btn" onclick="trimCurrentRowWhitespace()" type="button" title="Trim excess spaces and trailing lines">
+                                ✂️ Trim Spaces
+                            </button>
+                            <button class="tool-btn" onclick="capitalizeCurrentRow()" type="button" title="Capitalize first character and ensure punctuation">
+                                🔤 Fix Punctuation
+                            </button>
+                            <button class="tool-btn" onclick="wrapCodeBlockInAssistant()" type="button" title="Wrap assistant response in markdown code block">
+                                📝 Code Block
+                            </button>
+                            <button class="tool-btn" onclick="swapUserAssistant()" type="button" title="Swap User prompt and Assistant response">
+                                🔄 Swap Roles
+                            </button>
+                            <button class="tool-btn tool-btn-highlight" onclick="autoRepairCurrentRow()" type="button" title="1-Click Auto-Repair this example">
+                                🧹 1-Click Auto-Repair
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Visual Form View -->
+                    <div class="studio-form-view" id="studioFormView">
+                        <!-- System Prompt Field -->
+                        <div class="studio-role-card role-system">
+                            <div class="role-header">
+                                <div class="role-badge badge-system">
+                                    <span class="role-dot"></span> SYSTEM PROMPT (OPTIONAL)
+                                </div>
+                                <span class="role-hint">Steers persona, formatting, and behavioral boundaries</span>
+                                <div class="role-count" id="sysCharCount">0 chars · ~0 tokens</div>
+                            </div>
+                            <textarea class="studio-textarea textarea-system" id="editRowSystem" rows="2" placeholder="e.g. You are an expert customer support agent..." oninput="onEditorInputChange()"></textarea>
+                        </div>
+
+                        <!-- User Prompt Field -->
+                        <div class="studio-role-card role-user">
+                            <div class="role-header">
+                                <div class="role-badge badge-user">
+                                    <span class="role-dot"></span> USER PROMPT (REQUIRED) *
+                                </div>
+                                <span class="role-hint">The input question, command, or customer issue</span>
+                                <div class="role-count" id="userCharCount">0 chars · ~0 tokens</div>
+                            </div>
+                            <textarea class="studio-textarea textarea-user" id="editRowUser" rows="3" placeholder="Enter user prompt or question..." oninput="onEditorInputChange()"></textarea>
+                        </div>
+
+                        <!-- Assistant Target Response Field -->
+                        <div class="studio-role-card role-assistant">
+                            <div class="role-header">
+                                <div class="role-badge badge-assistant">
+                                    <span class="role-dot"></span> ASSISTANT TARGET RESPONSE (GROUND TRUTH) *
+                                </div>
+                                <span class="role-hint">The gold-standard answer the fine-tuned model must generate</span>
+                                <div class="role-count" id="asstCharCount">0 chars · ~0 tokens</div>
+                            </div>
+                            <textarea class="studio-textarea textarea-assistant" id="editRowAssistant" rows="4" placeholder="Enter high-quality target response..." oninput="onEditorInputChange()"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 2: All Examples Table & Global Tools View (SEPARATE TAB - 10 Rows Scrollable) -->
+                <div class="studio-table-view hidden" id="studioTableView">
+                    <!-- Global System Prompt Box inside Popup -->
+                    <div class="global-system-prompt-box popup-sys-box">
+                        <div class="sys-box-top">
+                            <label for="popupGlobalSysPromptInput">
+                                <strong>Global System Prompt:</strong>
+                                <span>Guide model persona and behavior consistently across all examples</span>
+                            </label>
+                            <select class="sys-preset-select" id="popupSysPresetSelect" onchange="applyPresetToPopupSys(this.value)">
+                                <option value="">Choose preset template...</option>
+                                <option value="You are an empathetic, professional customer care specialist. Always provide clear, courteous, and step-by-step guidance.">🎧 Customer Support</option>
+                                <option value="You are a principal software engineer. Write clean, production-grade Python code with docstrings, type hints, and robust error handling.">💻 Python Engineer</option>
+                                <option value="You are an expert clinical triage consultant. Provide accurate, clear medical explanations with appropriate safety disclaimers and emergency advice.">🩺 Clinical Health</option>
+                                <option value="You are a senior quantitative financial analyst. Extract key metrics and deliver structured, concise financial intelligence.">📊 Financial Analyst</option>
+                                <option value="You are a logical reasoning assistant. Explain your thought process step by step before providing the final answer.">🧠 Step-by-Step Reasoning (CoT)</option>
+                                <option value="You are a direct, concise assistant. Answer questions directly in 1-3 sentences without fluff.">⚡ Direct & Concise Q&A</option>
+                            </select>
+                        </div>
+                        <div class="sys-input-group">
+                            <textarea id="popupGlobalSysPromptInput" class="sys-prompt-textarea" rows="2" placeholder="e.g. You are an expert AI assistant specialized in..."></textarea>
+                            <button class="btn btn-primary btn-small" id="popupApplyGlobalSysBtn" onclick="applyGlobalSystemPromptFromPopup()" type="button">Apply to All Rows</button>
+                        </div>
+                    </div>
+
+                    <!-- Filter Bar & Table Controls -->
+                    <div class="popup-table-controls">
+                        <div class="popup-search-box">
+                            <span class="search-icon">🔍</span>
+                            <input type="text" id="popupTableSearchInput" class="popup-search-input" placeholder="Search prompts or responses (e.g. 'Hajj', 'Ramadan', 'refund')..." oninput="onPopupTableSearch(this.value)">
+                        </div>
+                        <div class="popup-table-meta">
+                            <span class="popup-count-badge" id="popupTableCountBadge">Showing 55 examples</span>
+                        </div>
+                        <div class="popup-quick-btns">
+                            <button class="btn btn-secondary btn-small" onclick="openAddNewRowInStudio()" type="button">+ Add Example</button>
+                            <button class="btn btn-secondary btn-small" onclick="triggerAutoClean()" type="button">✨ Auto-Clean</button>
+                        </div>
+                    </div>
+
+                    <!-- Interactive Rows Table inside Popup (10 rows scrollable at once) -->
+                    <div class="popup-table-container">
+                        <table class="inspector-table" id="popupInspectorTable">
+                            <thead>
+                                <tr>
+                                    <th style="width: 50px;">#</th>
+                                    <th style="width: 100px;">Format</th>
+                                    <th>User Prompt</th>
+                                    <th>Assistant Response</th>
+                                    <th style="width: 75px;">Tokens</th>
+                                    <th style="width: 140px; text-align: center;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="popupInspectorTableBody">
+                                <!-- Dynamically populated rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Tab 3: Raw JSONL Schema View -->
+                <div class="studio-json-view hidden" id="studioJsonView">
+                    <div class="json-view-top">
+                        <span class="json-view-hint">Raw OpenAI-format Chat JSON for this example. You can edit directly or copy.</span>
+                        <div class="json-actions">
+                            <button class="btn-json-action" onclick="formatRawJsonText()" type="button">Format JSON</button>
+                            <button class="btn-json-action" onclick="copyRawJsonText()" type="button" id="copyRawJsonBtn">📋 Copy JSON</button>
+                        </div>
+                    </div>
+                    <textarea class="studio-json-textarea" id="editRowJsonRaw" spellcheck="false" oninput="onRawJsonInputChange()"></textarea>
+                    <div class="json-validation-status" id="jsonValidationStatus"></div>
+                </div>
+            </div>
+
+            <!-- Modal Footer with Rich Actions -->
+            <div class="modal-footer studio-popup-footer">
+                <div class="footer-left-actions" id="studioFooterLeft">
+                    <!-- Dynamic actions based on view -->
+                    <button class="btn btn-ghost btn-danger-ghost" id="deleteCurrentRowBtn" onclick="deleteCurrentRowFromModal()" type="button">
+                        🗑️ Delete Example
+                    </button>
+                    <button class="btn btn-secondary btn-small" id="duplicateRowBtn" onclick="duplicateCurrentRow()" type="button">
+                        📋 Duplicate Example
+                    </button>
+                    <button class="btn btn-secondary btn-small" onclick="applySystemPromptToAllFromModal()" type="button">
+                        ⚡ Apply System to All Rows
+                    </button>
+                </div>
+
+                <div class="footer-right-actions" id="studioFooterRight">
+                    <button class="btn btn-ghost" id="cancelRowEditBtn" onclick="closeStudioPopup()" type="button">Close</button>
+                    <button class="btn btn-secondary" id="saveAndNextBtn" onclick="saveEditedRow(true)" type="button">
+                        Save & Next ▶
+                    </button>
+                    <button class="btn btn-primary" id="saveRowEditBtn" onclick="saveEditedRow(false)" type="button">
+                        💾 Save Changes
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Row Modal -->
+    <div class="modal-overlay hidden" id="addRowModal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3>Add New Training Example</h3>
+                <button class="modal-close" id="closeAddRowBtn" type="button">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="addRowSystem">System Prompt (Optional):</label>
+                    <textarea class="prompt-textarea" id="addRowSystem" rows="2" placeholder="Default system prompt if applicable..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="addRowUser">User Prompt: *</label>
+                    <textarea class="prompt-textarea" id="addRowUser" rows="3" placeholder="Enter the user question or instruction..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="addRowAssistant">Assistant Target Response: *</label>
+                    <textarea class="prompt-textarea" id="addRowAssistant" rows="4" placeholder="Enter the ideal assistant answer..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-ghost" id="cancelAddRowBtn" type="button">Cancel</button>
+                <button class="btn btn-primary" id="saveAddRowBtn" type="button">+ Insert into Dataset</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- API Providers & Model Configuration Hub Modal -->
+    <div class="modal-overlay hidden" id="apiConfigModal">
+        <div class="modal-content modal-large api-config-modal-box">
+            <div class="modal-header">
+                <div class="modal-title-group">
+                    <span class="modal-title-icon">⚙️</span>
+                    <h3>Model Providers & API Configuration Hub</h3>
+                </div>
+                <button class="modal-close" id="closeApiConfigBtn" onclick="closeApiConfigModal()" type="button">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="api-provider-tabs">
+                    <button class="provider-tab active" data-provider="ollama" type="button">🦙 Local Ollama</button>
+                    <button class="provider-tab" data-provider="openai" type="button">⚡ OpenAI</button>
+                    <button class="provider-tab" data-provider="groq" type="button">🚀 Groq</button>
+                    <button class="provider-tab" data-provider="together" type="button">🤝 Together AI</button>
+                    <button class="provider-tab" data-provider="anthropic" type="button">🧠 Anthropic</button>
+                    <button class="provider-tab" data-provider="huggingface" type="button">🤗 Hugging Face</button>
+                </div>
+
+                <div class="api-form-body">
+                    <div class="form-row-grid">
+                        <div class="form-group">
+                            <label for="apiEndpointInput">API Endpoint URL:</label>
+                            <input type="text" id="apiEndpointInput" class="config-input" value="http://localhost:11434">
+                        </div>
+                        <div class="form-group" id="apiKeyGroup">
+                            <label for="apiKeyInput">API Key: <span class="hint-key">(Ollama runs locally without key)</span></label>
+                            <div class="input-password-wrapper">
+                                <input type="password" id="apiKeyInput" class="config-input" placeholder="sk-...">
+                                <button class="btn-toggle-eye" id="toggleApiKeyVisibility" type="button">👁️</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="apiModelInput">Model Identifier:</label>
+                        <div class="model-select-wrapper">
+                            <input type="text" id="apiModelInput" class="config-input" value="qwen2.5:3b" placeholder="e.g. qwen2.5:3b, llama-3.2-3b-instruct">
+                            <select id="apiOllamaModelSelect" class="config-select hidden">
+                                <!-- Dynamically populated -->
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="api-test-action-bar">
+                        <button class="btn btn-secondary btn-small" id="testApiConnectionBtn" type="button">
+                            🔌 Test Connection & Validate Key
+                        </button>
+                        <span class="api-test-status" id="apiTestStatus"></span>
+                    </div>
+
+                    <!-- Generated Code Snippets -->
+                    <div class="code-snippets-container">
+                        <div class="snippet-header">
+                            <div class="snippet-tabs">
+                                <button class="snippet-tab active" data-lang="python" type="button">Python</button>
+                                <button class="snippet-tab" data-lang="curl" type="button">cURL</button>
+                                <button class="snippet-tab" data-lang="javascript" type="button">JavaScript</button>
+                            </div>
+                            <button class="btn-copy-snippet" id="copySnippetBtn" type="button">📋 Copy Code</button>
+                        </div>
+                        <pre class="snippet-pre"><code id="codeSnippetDisplay"># Testing connection to generate ready-to-run code snippet...</code></pre>
+                    </div>
+                </div>
+            </div>
+    <!-- Training Run Details & Loss Inspector Modal -->
+    <div class="modal-overlay hidden" id="runDetailsModal">
+        <div class="modal-content modal-large run-details-modal-box">
+            <div class="modal-header">
+                <div class="modal-title-group">
+                    <span class="modal-title-icon">📊</span>
+                    <h3 id="runDetailsModalTitle">Training Run Inspection & Loss Curve</h3>
+                </div>
+                <button class="modal-close" id="closeRunDetailsBtn" onclick="closeRunDetailsModal()" type="button">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="run-modal-metrics-grid" id="runModalMetricsGrid">
+                    <!-- Populated dynamically -->
+                </div>
+                <div class="run-modal-section">
+                    <h4 class="run-section-title">LoRA Architecture & Adapter Configuration</h4>
+                    <pre class="run-json-box"><code id="runModalAdapterConfig">Loading configuration...</code></pre>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-ghost" onclick="closeRunDetailsModal()" type="button">Close</button>
+                <button class="btn btn-primary" id="runModalTestBtn" type="button">Test Checkpoint in Studio →</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/app.js?v=424"></script>
+</body>
+</html>

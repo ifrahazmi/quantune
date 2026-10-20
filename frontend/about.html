@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Quantune — Architecture, Vision & Creator</title>
+    <meta name="description" content="Discover the vision behind Quantune, the Small Language Model fine-tuning architecture, and creator Ifrahuddin Azmi.">
+    <link rel="icon" type="image/svg+xml" href="/logo.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/landing.css?v=65">
+    <style>
+        .about-hero {
+            padding: 8rem 0 4rem;
+            text-align: center;
+            position: relative;
+        }
+        .about-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.35rem 0.9rem;
+            border-radius: var(--radius-pill);
+            background: rgba(99, 102, 241, 0.12);
+            border: 1px solid var(--border-glow);
+            color: #818CF8;
+            font-size: 0.82rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 1.25rem;
+        }
+        [data-theme="light"] .about-badge {
+            background: #EEF2FF;
+            color: #4F46E5;
+            border-color: #C7D2FE;
+        }
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+        @media (max-width: 860px) {
+            .about-grid { grid-template-columns: 1fr; }
+        }
+        .about-card {
+            background: var(--bg-card);
+            backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: 2.2rem;
+            transition: all 0.25s ease;
+        }
+        .about-card:hover {
+            border-color: var(--border-glow);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+        }
+        .about-card-icon {
+            font-size: 2.2rem;
+            margin-bottom: 1rem;
+            display: inline-block;
+        }
+        .about-card h3 {
+            font-size: 1.35rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            color: var(--text-primary);
+        }
+        .about-card p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        /* Developer Spotlight Card */
+        .creator-section {
+            margin: 5rem 0;
+        }
+        .creator-card {
+            background: linear-gradient(135deg, rgba(16, 22, 34, 0.9) 0%, rgba(30, 27, 75, 0.4) 100%);
+            border: 1px solid var(--border-glow);
+            border-radius: var(--radius-lg);
+            padding: 3rem;
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4), var(--glow-indigo);
+            display: grid;
+            grid-template-columns: 240px 1fr;
+            gap: 2.5rem;
+            align-items: center;
+            backdrop-filter: blur(20px);
+        }
+        [data-theme="light"] .creator-card {
+            background: linear-gradient(135deg, #FFFFFF 0%, #EEF2FF 100%);
+            border-color: #CBD5E1;
+            box-shadow: 0 12px 35px rgba(99, 102, 241, 0.12);
+        }
+        @media (max-width: 800px) {
+            .creator-card {
+                grid-template-columns: 1fr;
+                text-align: center;
+                padding: 2rem;
+            }
+        }
+        .creator-avatar-wrap {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+        .creator-avatar {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #06B6D4, #6366F1, #8B5CF6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: white;
+            box-shadow: 0 0 35px rgba(99, 102, 241, 0.45);
+            border: 4px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+        }
+        .creator-verified-badge {
+            background: #10B981;
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 0.2rem 0.65rem;
+            border-radius: var(--radius-pill);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        .creator-details h2 {
+            font-size: 1.85rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 0.35rem;
+        }
+        .creator-role {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--accent-indigo);
+            margin-bottom: 1.25rem;
+        }
+        [data-theme="light"] .creator-role {
+            color: #4F46E5;
+        }
+        .creator-bio {
+            font-size: 0.98rem;
+            line-height: 1.7;
+            color: var(--text-secondary);
+            margin-bottom: 1.75rem;
+        }
+        .tech-pill-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.75rem;
+        }
+        .tech-pill {
+            padding: 0.3rem 0.75rem;
+            border-radius: var(--radius-pill);
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-subtle);
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+        [data-theme="light"] .tech-pill {
+            background: #FFFFFF;
+            border-color: #E2E8F0;
+            color: #334155;
+        }
+        .social-button-row {
+            display: flex;
+            gap: 0.85rem;
+            flex-wrap: wrap;
+        }
+        .btn-social {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.65rem 1.2rem;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            font-size: 0.88rem;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+        .btn-social-github {
+            background: #24292F;
+            color: #FFFFFF;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        .btn-social-github:hover {
+            background: #0F1419;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+        }
+        .btn-social-linkedin {
+            background: #0A66C2;
+            color: #FFFFFF;
+        }
+        .btn-social-linkedin:hover {
+            background: #084E96;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(10, 102, 194, 0.4);
+        }
+        .btn-social-twitter {
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--text-primary);
+            border: 1px solid var(--border-subtle);
+        }
+        .btn-social-twitter:hover {
+            background: rgba(255, 255, 255, 0.12);
+            transform: translateY(-2px);
+        }
+        [data-theme="light"] .btn-social-twitter {
+            background: #F1F5F9;
+            border-color: #CBD5E1;
+            color: #0F172A;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-gradient"></div>
+    <div class="bg-grid"></div>
+
+    <!-- Navigation -->
+    <nav class="nav" id="mainNav">
+        <a href="/" class="logo">
+            <span class="logo-icon">
+                <img src="/static/logo.svg" alt="Quantune Logo" width="36" height="36" class="brand-logo-img">
+            </span>
+            <span class="logo-text">Quantune</span>
+        </a>
+        <div class="nav-menu">
+            <a href="/" class="nav-link">Home</a>
+            <a href="/about" class="nav-link active">About & Creator</a>
+            <a href="/dashboard" class="nav-link">Studio Dashboard</a>
+            <a href="/#comparison" class="nav-link">Before/After</a>
+            <a href="/#samples" class="nav-link">Datasets</a>
+        </div>
+        <div class="nav-actions">
+            <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+                <svg class="sun-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="5"></circle>
+                    <line x1="12" y1="1" x2="12" y2="3"></line>
+                    <line x1="12" y1="21" x2="12" y2="23"></line>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                    <line x1="1" y1="12" x2="3" y2="12"></line>
+                    <line x1="21" y1="12" x2="23" y2="12"></line>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                </svg>
+                <svg class="moon-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                </svg>
+            </button>
+            <a href="https://github.com/ifrahazmi" class="github-btn" target="_blank" rel="noopener" aria-label="GitHub">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                </svg>
+            </a>
+            <a href="/dashboard" class="btn-nav">
+                <span>Launch Studio</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                    <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+            </a>
+        </div>
+    </nav>
+
+    <main class="main" style="max-width: 1100px; margin: 0 auto; padding: 0 1.5rem;">
+        <!-- Hero Section -->
+        <section class="about-hero">
+            <span class="about-badge">Architecture & Philosophy</span>
+            <h1 class="hero-title" style="font-size: 3rem; margin-bottom: 1.25rem;">
+                Why Small Language Models?<br>
+                <span class="gradient-text">Precision Over Raw Size.</span>
+            </h1>
+            <p class="section-desc" style="max-width: 720px; font-size: 1.15rem;">
+                Massive generalist LLMs are expensive, slow, and prone to hallucinations on specialized domain tasks. Quantune enables any engineer to fine-tune 1B–7B parameter SLMs to outperform 70B giants on narrow corporate and domain workloads.
+            </p>
+        </section>
+
+        <!-- The 4 Pillars -->
+        <section class="about-grid">
+            <div class="about-card">
+                <span class="about-card-icon">⚡</span>
+                <h3>Unsloth Response Masking</h3>
+                <p>Training models on the prompt tokens wastes GPU memory and induces catastrophic forgetting. Quantune automatically injects response loss masks, computing gradients strictly on assistant responses to deliver 2x–5x training speedups with 70% VRAM reductions.</p>
+            </div>
+            <div class="about-card">
+                <span class="about-card-icon">🎯</span>
+                <h3>Zero GPU Setup Barrier</h3>
+                <p>No local CUDA debugging, driver headaches, or monthly cloud GPU bills. Quantune compiles your dataset and hyperparameter recommendations directly into an executable, response-masked Google Colab notebook that runs 100% free on a T4 GPU.</p>
+            </div>
+            <div class="about-card">
+                <span class="about-card-icon">🩺</span>
+                <h3>Deep 12-Point Data Diagnostics</h3>
+                <p>90% of fine-tuning failures originate from contaminated, truncated, or unbalanced data. Quantune executes automatic schema normalization, token distribution analysis, and single-click automated repair before a single weight is updated.</p>
+            </div>
+            <div class="about-card">
+                <span class="about-card-icon">🔄</span>
+                <h3>Continuous Refinement Loop</h3>
+                <p>Evaluation shouldn't wait until production deployment. Step 5 provides a side-by-side comparative testing studio where you can contrast raw base SLMs against fine-tuned checkpoints and refine failure cases into new training rows in one click.</p>
+            </div>
+        </section>
+
+        <!-- Creator Profile Section -->
+        <section class="creator-section">
+            <div class="section-head centered" style="margin-bottom: 2rem;">
+                <span class="section-tag">Creator & Lead Architect</span>
+                <h2 class="section-title">Built by Ifrahuddin Azmi</h2>
+                <p class="section-desc">Engineering autonomous AI systems, optimized SLM workflows, and open-source tooling.</p>
+            </div>
+
+            <div class="creator-card">
+                <div class="creator-avatar-wrap">
+                    <div class="creator-avatar">IA</div>
+                    <span class="creator-verified-badge">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                        Lead Architect
+                    </span>
+                </div>
+                <div class="creator-details">
+                    <h2>Ifrahuddin Azmi</h2>
+                    <div class="creator-role">AI Systems Engineer & Full-Stack Architect · Creator of Quantune</div>
+                    <p class="creator-bio">
+                        Ifrahuddin Azmi architected Quantune to democratize domain-specific fine-tuning. Frustrated by the high barriers to entry in local LLM customization—costly cloud clusters, complex CUDA drivers, and brittle training pipelines—he developed Quantune to enable developers to go from raw JSONL data to a production-ready, quantized model checkpoint in under 15 minutes.
+                    </p>
+                    <div class="tech-pill-row">
+                        <span class="tech-pill">PyTorch</span>
+                        <span class="tech-pill">Unsloth</span>
+                        <span class="tech-pill">Hugging Face PEFT</span>
+                        <span class="tech-pill">FastAPI</span>
+                        <span class="tech-pill">LangGraph</span>
+                        <span class="tech-pill">GGUF & 4-bit Quantization</span>
+                        <span class="tech-pill">SLM Optimization</span>
+                    </div>
+                    <div class="social-button-row">
+                        <a href="https://github.com/ifrahazmi" class="btn-social btn-social-github" target="_blank" rel="noopener">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                            </svg>
+                            <span>github.com/ifrahazmi</span>
+                        </a>
+                        <a href="https://www.linkedin.com/in/ifrahuddin-azmi/" class="btn-social btn-social-linkedin" target="_blank" rel="noopener">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                            </svg>
+                            <span>LinkedIn Profile</span>
+                        </a>
+                        <a href="mailto:ifrahazmi@gmail.com" class="btn-social btn-social-twitter">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                                <polyline points="22,6 12,13 2,6"></polyline>
+                            </svg>
+                            <span>Contact Creator</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Banner -->
+        <section style="text-align: center; padding: 4rem 0 6rem;">
+            <h2 style="font-size: 2.2rem; font-weight: 800; margin-bottom: 1rem; color: var(--text-primary);">Ready to Fine-Tune Your First Model?</h2>
+            <p style="color: var(--text-secondary); max-width: 580px; margin: 0 auto 2rem; font-size: 1.05rem;">Jump into the Quantune Studio and take advantage of our hardware probe, automated Unsloth tuning, and live test playground.</p>
+            <a href="/dashboard" class="btn-primary btn-glow" style="display: inline-flex; align-items: center; gap: 0.6rem; padding: 0.9rem 2rem; font-size: 1.05rem;">
+                <span>Open Studio Dashboard</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                    <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+            </a>
+        </section>
+    </main>
+
+    <!-- Rich Developer Footer -->
+    <footer class="footer">
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <a href="/" class="logo" style="margin-bottom: 0.75rem;">
+                    <img src="/static/logo.svg" alt="Quantune Logo" width="30" height="30" class="brand-logo-img">
+                    <span class="logo-text">Quantune</span>
+                </a>
+                <p class="footer-tagline">Automated Small Language Model fine-tuning, Unsloth response loss masking, and continuous evaluation studio.</p>
+                <div style="margin-top: 1rem; font-size: 0.82rem; color: var(--text-muted);">
+                    Crafted with precision by <strong>Ifrahuddin Azmi</strong>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>Navigation</h4>
+                <a href="/">Home</a>
+                <a href="/about">About & Architecture</a>
+                <a href="/dashboard">Studio Dashboard</a>
+                <a href="/#comparison">Proof of Accuracy</a>
+                <a href="/#samples">Sample Datasets</a>
+            </div>
+            <div class="footer-col">
+                <h4>Supported SLMs</h4>
+                <a href="/dashboard">Phi-4 Mini (3.8B)</a>
+                <a href="/dashboard">Llama 3.2 (1B & 3B)</a>
+                <a href="/dashboard">Mistral (7B)</a>
+                <a href="/dashboard">Qwen 2.5 (1.5B & 3B)</a>
+                <a href="/dashboard">Gemma 2 (2B)</a>
+            </div>
+            <div class="footer-col">
+                <h4>Connect with Developer</h4>
+                <a href="https://github.com/ifrahazmi" target="_blank" rel="noopener">GitHub: @ifrahazmi</a>
+                <a href="https://www.linkedin.com/in/ifrahuddin-azmi/" target="_blank" rel="noopener">LinkedIn: Ifrahuddin Azmi</a>
+                <a href="mailto:ifrahazmi@gmail.com">Email: ifrahazmi@gmail.com</a>
+                <div style="margin-top: 0.75rem;">
+                    <span style="display: inline-block; padding: 0.2rem 0.6rem; border-radius: 4px; background: rgba(16, 185, 129, 0.15); color: #10B981; font-size: 0.75rem; font-weight: 700;">MIT Open Source</span>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span>© 2026 Quantune · Architected by Ifrahuddin Azmi. Licensed under MIT.</span>
+        </div>
+    </footer>
+
+    <!-- Theme Switcher Script -->
+    <script>
+        (function() {
+            const toggle = document.getElementById('themeToggle');
+            const html = document.documentElement;
+            const savedTheme = localStorage.getItem('quantune-theme') || localStorage.getItem('tunekit-theme');
+            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+            if (savedTheme) {
+                html.setAttribute('data-theme', savedTheme);
+            } else if (!systemPrefersDark) {
+                html.setAttribute('data-theme', 'light');
+            }
+
+            if (toggle) {
+                toggle.addEventListener('click', () => {
+                    const currentTheme = html.getAttribute('data-theme');
+                    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+                    if (newTheme === 'dark') {
+                        html.removeAttribute('data-theme');
+                    } else {
+                        html.setAttribute('data-theme', newTheme);
+                    }
+                    localStorage.setItem('quantune-theme', newTheme);
+                });
+            }
+        })();
+    </script>
+</body>
+</html>

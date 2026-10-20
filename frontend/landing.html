@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantune — Fine-Tune Small Language Models, Fast & Free</title>
+    <meta name="description" content="Turn your JSONL datasets into production-ready fine-tuned SLMs in 15 minutes. Powered by Unsloth, free on Google Colab, with live testing and accuracy refinement.">
+    <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/landing.css?v=62">
+</head>
+<body>
+    <!-- Background Ambient Glow & Grid -->
+    <div class="bg-gradient"></div>
+    <div class="bg-grid"></div>
+    <div class="floating-orbs">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="nav" id="mainNav">
+        <a href="/" class="logo">
+            <span class="logo-icon">
+                <img src="/static/logo.svg" alt="Quantune Logo" width="34" height="34" class="brand-logo-img">
+            </span>
+            <span class="logo-text">Quantune</span>
+        </a>
+        <div class="nav-menu">
+            <a href="/about" class="nav-link">About & Creator</a>
+            <a href="#workflow" class="nav-link">Animated Workflow</a>
+            <a href="#comparison" class="nav-link">Before / After</a>
+            <a href="#samples" class="nav-link">Sample Datasets</a>
+            <a href="#models" class="nav-link">Supported Models</a>
+        </div>
+        <div class="nav-actions">
+            <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+                <svg class="sun-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="5"></circle>
+                    <line x1="12" y1="1" x2="12" y2="3"></line>
+                    <line x1="12" y1="21" x2="12" y2="23"></line>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                    <line x1="1" y1="12" x2="3" y2="12"></line>
+                    <line x1="21" y1="12" x2="23" y2="12"></line>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                </svg>
+                <svg class="moon-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                </svg>
+            </button>
+            <a href="https://github.com/ifrahazmi" class="github-btn" target="_blank" rel="noopener" aria-label="GitHub">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                </svg>
+            </a>
+            <a href="/dashboard" class="btn-nav">
+                <span>Launch Studio</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                    <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+            </a>
+        </div>
+    </nav>
+
+    <main class="main">
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-content">
+                <div class="badge-row">
+                    <span class="badge badge-glow">
+                        <span class="badge-dot"></span>
+                        Automated SLM Studio
+                    </span>
+                    <span class="badge badge-subtle">Powered by Unsloth</span>
+                    <span class="badge badge-subtle">Free on Google Colab T4</span>
+                    <span class="badge badge-subtle">0 GPU Setup Needed</span>
+                </div>
+
+                <h1 class="hero-title">
+                    Fine-tune SLMs with Precision.<br>
+                    <span class="gradient-text">2x Faster, 100% Free.</span>
+                </h1>
+
+                <p class="hero-subtitle">
+                    Transform raw domain data into specialized, highly accurate Small Language Models. Automated validation, smart model selection, response-masked Colab notebooks, and live testing with instant feedback refinement.
+                </p>
+
+                <div class="hero-cta">
+                    <a href="/dashboard" class="btn-primary btn-glow" id="heroStartBtn">
+                        <span>Launch Fine-Tuning Studio</span>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </a>
+                    <a href="#samples" class="btn-secondary" id="heroExploreSamplesBtn">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="9" y1="3" x2="9" y2="21"></line>
+                        </svg>
+                        <span>Try Sample Datasets</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Terminal Hero Visual -->
+            <div class="hero-preview-wrapper">
+                <div class="terminal-card">
+                    <div class="terminal-top">
+                        <div class="terminal-dots">
+                            <span class="dot dot-red"></span>
+                            <span class="dot dot-yellow"></span>
+                            <span class="dot dot-green"></span>
+                        </div>
+                        <div class="terminal-title">quantune-pipeline.py · Unsloth Engine</div>
+                        <div class="terminal-chip">T4 GPU · Active</div>
+                    </div>
+                    <div class="terminal-content">
+                        <div class="code-line"><span class="cmd-prompt">quantune</span> <span class="cmd-arg">ingest</span> <span class="cmd-file">customer_support.jsonl</span></div>
+                        <div class="code-line log-dim">✓ Ingested 55 multi-turn conversations · Format: chatml · Avg tokens: 110</div>
+                        <div class="code-line"><span class="cmd-prompt">quantune</span> <span class="cmd-arg">recommend</span> <span class="cmd-flag">--task</span> conversation <span class="cmd-flag">--target</span> cloud_api</div>
+                        <div class="code-line log-success">✓ Recommendation: <strong>Llama 3.2 3B</strong> (Score: 92/100 · LoRA r=16 alpha=16)</div>
+                        <div class="code-line"><span class="cmd-prompt">quantune</span> <span class="cmd-arg">generate-colab</span> <span class="cmd-flag">--mask-responses</span></div>
+                        <div class="code-line log-accent">⚡ Unsloth response loss masking enabled · 70% VRAM reduction</div>
+                        <div class="code-line"><span class="cmd-prompt">quantune</span> <span class="cmd-arg">test-studio</span> <span class="cmd-flag">--live-benchmark</span></div>
+                        <div class="code-line log-bright">🎯 Accuracy Scorecard: 100% approved · 0 hallucinations · Ready for deploy</div>
+                    </div>
+                </div>
+                <div class="terminal-glow"></div>
+            </div>
+        </section>
+
+        <!-- Metrics Stats Ribbon -->
+        <section class="stats-ribbon">
+            <div class="stat-card">
+                <div class="stat-number">2x - 5x</div>
+                <div class="stat-text">Faster LoRA Training</div>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-card">
+                <div class="stat-number">70%</div>
+                <div class="stat-text">Lower Memory Usage</div>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-card">
+                <div class="stat-number">$0.00</div>
+                <div class="stat-text">Free GPU on Google Colab</div>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-card">
+                <div class="stat-number">1-Click</div>
+                <div class="stat-text">Continuous Refinement Loop</div>
+            </div>
+        </section>
+
+        <!-- Live Interactive Before vs After Fine-Tuning Widget -->
+        <section class="comparison-section" id="comparison">
+            <div class="section-head centered">
+                <span class="section-tag">Proof of Accuracy</span>
+                <h2 class="section-title">See the Difference Fine-Tuning Makes</h2>
+                <p class="section-desc">Select a domain below to compare raw pre-trained base models against models fine-tuned with Quantune.</p>
+            </div>
+
+            <div class="comparison-widget">
+                <!-- Domain Tabs -->
+                <div class="comparison-tabs" id="comparisonTabs">
+                    <button class="comp-tab active" data-domain="support" type="button">
+                        <span class="comp-tab-icon">🎧</span>
+                        <span>Customer Support</span>
+                    </button>
+                    <button class="comp-tab" data-domain="code" type="button">
+                        <span class="comp-tab-icon">💻</span>
+                        <span>Python Coder</span>
+                    </button>
+                    <button class="comp-tab" data-domain="medical" type="button">
+                        <span class="comp-tab-icon">🩺</span>
+                        <span>Clinical Triage</span>
+                    </button>
+                    <button class="comp-tab" data-domain="finance" type="button">
+                        <span class="comp-tab-icon">📊</span>
+                        <span>Financial Analysis</span>
+                    </button>
+                </div>
+
+                <!-- Active Prompt Display -->
+                <div class="comparison-prompt-bar">
+                    <span class="prompt-badge">User Prompt</span>
+                    <span class="prompt-query" id="compPromptText">"My tracking says delivered yesterday, but I never received anything. Can you help?"</span>
+                </div>
+
+                <!-- Side-by-side Response Comparison -->
+                <div class="comparison-split-view">
+                    <!-- Base Model Column -->
+                    <div class="comp-col base-col">
+                        <div class="comp-col-header">
+                            <div class="comp-model-badge base-badge">
+                                <span class="badge-dot-red"></span>
+                                Base Generic Model (Pre-Trained)
+                            </div>
+                            <span class="comp-flaw-tag" id="baseFlawTag">Generic & Unhelpful</span>
+                        </div>
+                        <div class="comp-response-body" id="baseResponseText">
+                            "Tracking information can sometimes be inaccurate due to delays in carrier updates. Packages often get delivered to neighbors or front desks. You should check your front porch and contact the carrier directly to file a claim. If it does not arrive in a few days, try contacting customer support again."
+                        </div>
+                        <div class="comp-critique">
+                            <span class="critique-icon">⚠️</span>
+                            <span id="baseCritique">No empathy, provides no concrete resolution, pushes user to external carriers instead of handling order lookup internally.</span>
+                        </div>
+                    </div>
+
+                    <!-- Fine-Tuned Model Column -->
+                    <div class="comp-col tuned-col">
+                        <div class="comp-col-header">
+                            <div class="comp-model-badge tuned-badge">
+                                <span class="badge-dot-green"></span>
+                                Quantune Fine-Tuned Model
+                            </div>
+                            <span class="comp-win-tag">100% Policy Compliant</span>
+                        </div>
+                        <div class="comp-response-body" id="tunedResponseText">
+                            "I am so sorry to hear your package is missing—let's resolve this right away. I have initiated a trace for your shipment. If the carrier cannot verify delivery within 24 hours, we will immediately issue a replacement shipment or a 100% refund to your original payment method. Could you confirm your order number so I can pull up the file?"
+                        </div>
+                        <div class="comp-critique tuned">
+                            <span class="critique-icon">✅</span>
+                            <span id="tunedCritique">Empathetic opening, clear 24h resolution SLA, guarantees replacement/refund, and requests needed order identifier.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Built-in Sample Datasets Section -->
+        <section class="samples-section" id="samples">
+            <div class="section-head centered">
+                <span class="section-tag">Instant Data Hub</span>
+                <h2 class="section-title">Start Instantly with 4 Curated Datasets</h2>
+                <p class="section-desc">Don't have a dataset ready? Load any of our battle-tested, high-quality JSONL datasets with a single click.</p>
+            </div>
+
+            <div class="samples-grid">
+                <!-- Sample 1 -->
+                <div class="sample-card">
+                    <div class="sample-top">
+                        <div class="sample-icon-wrap support-icon">🎧</div>
+                        <div class="sample-meta">
+                            <span class="sample-badge">Customer Support</span>
+                            <span class="sample-rows">55 conversations</span>
+                        </div>
+                    </div>
+                    <h3 class="sample-title">E-Commerce Customer Support</h3>
+                    <p class="sample-desc">55 multi-turn conversations resolving refunds, order tracking, damaged parcels, and exchanges with empathetic tone.</p>
+                    <div class="sample-tags">
+                        <span class="tag">Multi-Turn</span>
+                        <span class="tag">Order Triage</span>
+                        <span class="tag">Refunds</span>
+                    </div>
+                    <a href="/dashboard?sample=customer_support" class="btn-sample-load">
+                        <span>Load in Studio</span>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </a>
+                </div>
+
+                <!-- Sample 2 -->
+                <div class="sample-card">
+                    <div class="sample-top">
+                        <div class="sample-icon-wrap code-icon">💻</div>
+                        <div class="sample-meta">
+                            <span class="sample-badge">Code & Architecture</span>
+                            <span class="sample-rows">55 instructions</span>
+                        </div>
+                    </div>
+                    <h3 class="sample-title">Python Algorithms & Pipelines</h3>
+                    <p class="sample-desc">Production-grade Python implementations featuring type hints, docstrings, robust error handling, and unit test suites.</p>
+                    <div class="sample-tags">
+                        <span class="tag">Algorithms</span>
+                        <span class="tag">Data Pipelines</span>
+                        <span class="tag">Unit Tests</span>
+                    </div>
+                    <a href="/dashboard?sample=python_coder" class="btn-sample-load">
+                        <span>Load in Studio</span>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </a>
+                </div>
+
+                <!-- Sample 3 -->
+                <div class="sample-card">
+                    <div class="sample-top">
+                        <div class="sample-icon-wrap med-icon">🩺</div>
+                        <div class="sample-meta">
+                            <span class="sample-badge">Clinical Triage</span>
+                            <span class="sample-rows">55 consultations</span>
+                        </div>
+                    </div>
+                    <h3 class="sample-title">Clinical Patient Triage & Q&A</h3>
+                    <p class="sample-desc">Medical queries with symptom analysis, pharmacology cautions, emergency red flags, and safe disclaimers.</p>
+                    <div class="sample-tags">
+                        <span class="tag">Clinical Triage</span>
+                        <span class="tag">Medication Safety</span>
+                        <span class="tag">Disclaimers</span>
+                    </div>
+                    <a href="/dashboard?sample=medical_qa" class="btn-sample-load">
+                        <span>Load in Studio</span>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </a>
+                </div>
+
+                <!-- Sample 4 -->
+                <div class="sample-card">
+                    <div class="sample-top">
+                        <div class="sample-icon-wrap fin-icon">📊</div>
+                        <div class="sample-meta">
+                            <span class="sample-badge">Finance & Analytics</span>
+                            <span class="sample-rows">55 extracts</span>
+                        </div>
+                    </div>
+                    <h3 class="sample-title">Financial Sentiment & SEC Data</h3>
+                    <p class="sample-desc">Extract earnings KPIs, parse balance sheet ratios, classify conference call sentiment, and output strict JSON schema.</p>
+                    <div class="sample-tags">
+                        <span class="tag">SEC Filings</span>
+                        <span class="tag">JSON Extraction</span>
+                        <span class="tag">Sentiment</span>
+                    </div>
+                    <a href="/dashboard?sample=finance_analyst" class="btn-sample-load">
+                        <span>Load in Studio</span>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5-Step Pipeline Architecture Section -->
+        <section class="pipeline-section" id="pipeline">
+            <div class="section-head centered">
+                <span class="section-tag">End-to-End Workflow</span>
+                <h2 class="section-title">A Complete, Rigorous Fine-Tuning Pipeline</h2>
+                <p class="section-desc">From your initial raw dataset to continuous accuracy improvement in production.</p>
+            </div>
+
+            <div class="pipeline-track">
+                <!-- Step 1 -->
+                <div class="pipeline-step-card">
+                    <div class="p-step-badge">Step 01</div>
+                    <div class="p-step-icon">📁</div>
+                    <h3 class="p-step-title">Intelligent Data Hub</h3>
+                    <p class="p-step-desc">Drop your JSONL or select a sample dataset. Automatic schema validation, token estimation, and visual table inspector.</p>
+                    <div class="p-step-detail">Supports single & multi-turn conversations</div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="pipeline-step-card">
+                    <div class="p-step-badge">Step 02</div>
+                    <div class="p-step-icon">⚙️</div>
+                    <h3 class="p-step-title">Task & Config Engine</h3>
+                    <p class="p-step-desc">Automatic task detection (Chat, Q&A, Coding, Extraction) and deployment hardware filtering with hyperparameter controls.</p>
+                    <div class="p-step-detail">LoRA r=16, alpha=16, lr=2e-4</div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="pipeline-step-card">
+                    <div class="p-step-badge">Step 03</div>
+                    <div class="p-step-icon">🏆</div>
+                    <h3 class="p-step-title">Model Scoring Matrix</h3>
+                    <p class="p-step-desc">Compare 5 top open SLMs side-by-side with VRAM requirements, context window, baseline accuracy, and confidence ratings.</p>
+                    <div class="p-step-detail">Phi-4 Mini, Llama 3.2, Gemma 2, Qwen 2.5</div>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="pipeline-step-card">
+                    <div class="p-step-badge">Step 04</div>
+                    <div class="p-step-icon">⚡</div>
+                    <h3 class="p-step-title">In-App & Colab Training</h3>
+                    <p class="p-step-desc">Train directly in the app with live loss curves and terminal telemetry, or export a 1-click Google Colab notebook powered by Unsloth.</p>
+                    <div class="p-step-detail">In-App background runner or free T4 GPU</div>
+                </div>
+
+                <!-- Step 5 -->
+                <div class="pipeline-step-card">
+                    <div class="p-step-badge">Step 05</div>
+                    <div class="p-step-icon">🎯</div>
+                    <h3 class="p-step-title">Testing & Refinement</h3>
+                    <p class="p-step-desc">3 test modes, automated ground truth benchmarks, approval scorecards, and a 1-click re-fine loop to eliminate errors.</p>
+                    <div class="p-step-detail">Local server, Colab URL, or Simulator</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Supported Models Matrix Showcase -->
+        <section class="models-section" id="models">
+            <div class="section-head centered">
+                <span class="section-tag">Model Compatibility</span>
+                <h2 class="section-title">State-of-the-Art Small Language Models</h2>
+                <p class="section-desc">Optimized 4-bit architectures curated for fast training and high reasoning efficiency.</p>
+            </div>
+
+            <div class="models-grid">
+                <div class="model-showcase-card">
+                    <div class="model-vendor">MICROSOFT</div>
+                    <h3 class="model-name">Phi-4 Mini</h3>
+                    <div class="model-specs">
+                        <span><strong>Size:</strong> 3.8B</span>
+                        <span><strong>Context:</strong> 128K</span>
+                        <span><strong>VRAM:</strong> 12GB</span>
+                    </div>
+                    <p class="model-desc">State of the art in reasoning, mathematics, logic, and structured extraction tasks.</p>
+                </div>
+
+                <div class="model-showcase-card">
+                    <div class="model-vendor">META</div>
+                    <h3 class="model-name">Llama 3.2</h3>
+                    <div class="model-specs">
+                        <span><strong>Size:</strong> 3B</span>
+                        <span><strong>Context:</strong> 128K</span>
+                        <span><strong>VRAM:</strong> 10GB</span>
+                    </div>
+                    <p class="model-desc">Top-tier multi-turn dialogue, customer assistance, and complex instruction following.</p>
+                </div>
+
+                <div class="model-showcase-card">
+                    <div class="model-vendor">GOOGLE</div>
+                    <h3 class="model-name">Gemma 2</h3>
+                    <div class="model-specs">
+                        <span><strong>Size:</strong> 2B</span>
+                        <span><strong>Context:</strong> 8K</span>
+                        <span><strong>VRAM:</strong> 6GB</span>
+                    </div>
+                    <p class="model-desc">Ultra-lightweight architecture engineered for edge devices, mobile apps, and low-latency APIs.</p>
+                </div>
+
+                <div class="model-showcase-card">
+                    <div class="model-vendor">ALIBABA</div>
+                    <h3 class="model-name">Qwen 2.5</h3>
+                    <div class="model-specs">
+                        <span><strong>Size:</strong> 3B</span>
+                        <span><strong>Context:</strong> 32K</span>
+                        <span><strong>VRAM:</strong> 10GB</span>
+                    </div>
+                    <p class="model-desc">Superior multilingual support across 29 languages and robust code generation capabilities.</p>
+                </div>
+
+                <div class="model-showcase-card">
+                    <div class="model-vendor">MISTRAL AI</div>
+                    <h3 class="model-name">Mistral 7B v0.3</h3>
+                    <div class="model-specs">
+                        <span><strong>Size:</strong> 7B</span>
+                        <span><strong>Context:</strong> 8K</span>
+                        <span><strong>VRAM:</strong> 18GB</span>
+                    </div>
+                    <p class="model-desc">High parameter capacity for deep narrative writing, long-form generation, and complex Q&A.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Interactive Animated Workflow & Live Code Execution Simulator -->
+        <section class="workflow-section" id="workflow">
+            <div class="section-head centered">
+                <span class="section-tag">Interactive Architecture</span>
+                <h2 class="section-title">Animated Quantune Workflow</h2>
+                <p class="section-desc">Watch how Quantune transforms raw domain JSONL datasets into production-grade Small Language Models with automated response-loss masking.</p>
+            </div>
+
+            <!-- 5-Step Visual Pipeline Stepper -->
+            <div class="workflow-stepper">
+                <div class="workflow-track">
+                    <div class="workflow-track-progress"></div>
+                </div>
+
+                <button class="wf-step-node active" data-step="1" type="button">
+                    <div class="wf-node-icon">📥</div>
+                    <div class="wf-node-title">1. Ingest & Normalize</div>
+                    <div class="wf-node-sub">Universal JSONL/CSV</div>
+                </button>
+
+                <button class="wf-step-node" data-step="2" type="button">
+                    <div class="wf-node-icon">🩺</div>
+                    <div class="wf-node-title">2. Deep Diagnostics</div>
+                    <div class="wf-node-sub">12-Point Quality Check</div>
+                </button>
+
+                <button class="wf-step-node" data-step="3" type="button">
+                    <div class="wf-node-icon">🧠</div>
+                    <div class="wf-node-title">3. SLM Recommendation</div>
+                    <div class="wf-node-sub">Hardware & Task Match</div>
+                </button>
+
+                <button class="wf-step-node" data-step="4" type="button">
+                    <div class="wf-node-icon">⚡</div>
+                    <div class="wf-node-title">4. Masked Colab Run</div>
+                    <div class="wf-node-sub">Free T4 · 70% Less VRAM</div>
+                </button>
+
+                <button class="wf-step-node" data-step="5" type="button">
+                    <div class="wf-node-icon">🎯</div>
+                    <div class="wf-node-title">5. Test & Refine</div>
+                    <div class="wf-node-sub">Live Accuracy Studio</div>
+                </button>
+            </div>
+
+            <!-- Live Animated Code Writing & Loss Descent Simulator -->
+            <div class="simulator-container">
+                <div class="sim-header">
+                    <div style="display: flex; align-items: center; gap: 0.6rem;">
+                        <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: #EF4444;"></span>
+                        <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: #F59E0B;"></span>
+                        <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: #10B981;"></span>
+                        <span class="sim-header-title" id="simHeaderTitle" style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; margin-left: 0.5rem;">pipeline_execution_sim.py · Quantune SDK v0.2.0</span>
+                    </div>
+                    <div class="sim-controls">
+                        <button class="sim-btn" id="simPlayBtn" type="button">
+                            <span>▶ Replay Run</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="sim-body">
+                    <!-- Left: Code writing simulation -->
+                    <div class="sim-code-pane" id="simCodePane">
+                        <pre style="margin: 0;"><code id="simCodeText">import quantune as qt
+
+# 1. Ingest and perform 12-point quality check
+dataset = qt.ingest("customer_support.jsonl")
+diag = qt.validate(dataset)  # Grade: A+ (Score: 98/100)
+
+# 2. Hardware-aware SLM recommendation
+rec = qt.recommend(task="conversation", hardware="T4")
+print(f"Target: {rec.model_name} (LoRA r=16, alpha=16)")
+
+# 3. Train with Unsloth response-loss masking
+trainer = qt.train(
+    model_id="unsloth/Phi-4-mini-instruct",
+    mask_prompt_loss=True,  # 70% VRAM saving!
+    epochs=3,
+    lr=2e-4
+)
+print("Quantune training job converged successfully!")</code><span class="sim-cursor"></span></pre>
+                    </div>
+
+                    <!-- Right: Live Loss Curve & Metric Stream -->
+                    <div class="sim-terminal-pane">
+                        <div>
+                            <div class="sim-chart-header">
+                                <span id="simChartTitle">Training Loss Descent</span>
+                                <span id="simEpochLabel" style="color: #10B981;">Epoch 3/3 · Step 120/120</span>
+                            </div>
+                            <!-- Live SVG Loss Sparkline -->
+                            <svg viewBox="0 0 300 75" style="width: 100%; height: 75px; overflow: visible;">
+                                <defs>
+                                    <linearGradient id="simLossGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                                        <stop offset="0%" stop-color="#10B981" stop-opacity="0.35"/>
+                                        <stop offset="100%" stop-color="#10B981" stop-opacity="0.0"/>
+                                    </linearGradient>
+                                </defs>
+                                <path id="simLossArea" d="M 10 65 Q 60 45, 120 30 T 220 18 T 290 12 L 290 75 L 10 75 Z" fill="url(#simLossGrad)"/>
+                                <path id="simLossLine" d="M 10 65 Q 60 45, 120 30 T 220 18 T 290 12" fill="none" stroke="#10B981" stroke-width="2.5" stroke-linecap="round"/>
+                                <circle id="simLossDot" cx="290" cy="12" r="3.5" fill="#00F0FF" stroke="#FFFFFF" stroke-width="1.5"/>
+                            </svg>
+
+                            <div class="sim-chart-header" style="margin-top: 0.75rem;">
+                                <span id="simProgressTitle">Training Progress</span>
+                                <span id="simProgressPct" style="color: #00F0FF;">100% Complete</span>
+                            </div>
+                            <div class="sim-progress-bar-bg">
+                                <div class="sim-progress-bar-fill" id="simProgressBar" style="width: 100%;"></div>
+                            </div>
+                        </div>
+
+                        <!-- Real-time Metrics -->
+                        <div class="sim-metrics-row">
+                            <div class="sim-metric-item">
+                                <span style="color: var(--text-muted); font-size: 0.72rem;" id="simMetric1Label">Current Loss</span>
+                                <span class="sim-metric-val green" id="simLossVal">0.318</span>
+                            </div>
+                            <div class="sim-metric-item">
+                                <span style="color: var(--text-muted); font-size: 0.72rem;" id="simMetric2Label">VRAM Allocated</span>
+                                <span class="sim-metric-val cyan" id="simMetric2Val">3.2 GB / 15.0 GB</span>
+                            </div>
+                            <div class="sim-metric-item">
+                                <span style="color: var(--text-muted); font-size: 0.72rem;" id="simMetric3Label">VRAM Saved</span>
+                                <span class="sim-metric-val purple" id="simMetric3Val">78.6%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Developer Spotlight Section -->
+        <section class="dev-spotlight-section">
+            <div class="section-head centered">
+                <span class="section-tag">Creator & Architect</span>
+                <h2 class="section-title">Designed by Ifrahuddin Azmi</h2>
+                <p class="section-desc">Engineering high-precision Small Language Models, autonomous agent workflows, and zero-cost training pipelines.</p>
+            </div>
+
+            <div class="dev-spotlight-card">
+                <div class="dev-avatar-wrap">
+                    <div class="dev-avatar">IA</div>
+                    <span class="dev-badge">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                        Lead Architect
+                    </span>
+                </div>
+                <div class="dev-info">
+                    <h3>Ifrahuddin Azmi</h3>
+                    <div class="dev-role">AI Systems Engineer & Full-Stack Architect · Creator of Quantune</div>
+                    <p class="dev-bio">
+                        Ifrahuddin built Quantune to eliminate the complexity and cost of training specialized models. By bridging automated dataset quality diagnostics with Unsloth response-loss masking and zero-setup Google Colab execution, Quantune makes production-grade SLM fine-tuning accessible to every developer in under 15 minutes.
+                    </p>
+                    <div class="dev-skills">
+                        <span class="dev-skill-chip">PyTorch</span>
+                        <span class="dev-skill-chip">Unsloth</span>
+                        <span class="dev-skill-chip">Hugging Face PEFT</span>
+                        <span class="dev-skill-chip">FastAPI</span>
+                        <span class="dev-skill-chip">LangGraph</span>
+                        <span class="dev-skill-chip">4-bit QLoRA</span>
+                        <span class="dev-skill-chip">SLM Optimization</span>
+                    </div>
+                    <div class="dev-actions">
+                        <a href="https://github.com/ifrahazmi" class="btn-primary" target="_blank" rel="noopener" style="padding: 0.65rem 1.25rem; font-size: 0.88rem; display: inline-flex; align-items: center; gap: 0.5rem;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                            </svg>
+                            <span>GitHub: @ifrahazmi</span>
+                        </a>
+                        <a href="/about" class="btn-secondary" style="padding: 0.65rem 1.25rem; font-size: 0.88rem;">
+                            <span>Read Full Story & Architecture →</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Final CTA Banner -->
+        <section class="cta-banner">
+            <div class="cta-inner">
+                <div class="cta-glow-circle"></div>
+                <h2 class="cta-heading">Ready to Build Your Specialized SLM?</h2>
+                <p class="cta-sub">Start with our sample datasets or bring your own JSONL. No credit card, no complex cloud setup.</p>
+                <div class="cta-buttons">
+                    <a href="/dashboard" class="btn-primary btn-large btn-glow">
+                        <span>Open Studio Dashboard</span>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </a>
+                    <a href="/dashboard?sample=customer_support" class="btn-secondary btn-large">
+                        <span>Quick-Test Customer Support</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Rich Developer Footer -->
+    <footer class="footer">
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <a href="/" class="logo">
+                    <img src="/static/logo.svg" alt="Quantune Logo" width="30" height="30" class="brand-logo-img">
+                    <span class="logo-text">Quantune</span>
+                </a>
+                <p class="footer-tagline">Automated Small Language Model fine-tuning, Unsloth response loss masking, and continuous evaluation studio.</p>
+                <div style="margin-top: 1rem; font-size: 0.84rem; color: var(--text-muted);">
+                    Crafted with precision by <strong>Ifrahuddin Azmi</strong>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>Navigation</h4>
+                <a href="/">Home</a>
+                <a href="/about">About & Architecture</a>
+                <a href="/dashboard">Studio Dashboard</a>
+                <a href="#comparison">Proof of Accuracy</a>
+                <a href="#samples">Sample Datasets</a>
+            </div>
+            <div class="footer-col">
+                <h4>Supported SLMs</h4>
+                <a href="/dashboard">Phi-4 Mini (3.8B)</a>
+                <a href="/dashboard">Llama 3.2 (1B & 3B)</a>
+                <a href="/dashboard">Mistral (7B)</a>
+                <a href="/dashboard">Qwen 2.5 (1.5B & 3B)</a>
+                <a href="/dashboard">Gemma 2 (2B)</a>
+            </div>
+            <div class="footer-col">
+                <h4>Connect with Developer</h4>
+                <a href="https://github.com/ifrahazmi" target="_blank" rel="noopener">GitHub: @ifrahazmi</a>
+                <a href="https://www.linkedin.com/in/ifrahuddin-azmi/" target="_blank" rel="noopener">LinkedIn: Ifrahuddin Azmi</a>
+                <a href="mailto:ifrahazmi@gmail.com">Email: ifrahazmi@gmail.com</a>
+                <div style="margin-top: 0.75rem;">
+                    <span style="display: inline-block; padding: 0.2rem 0.6rem; border-radius: 4px; background: rgba(16, 185, 129, 0.15); color: #10B981; font-size: 0.75rem; font-weight: 700;">MIT Open Source</span>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span>© 2026 Quantune · Architected by Ifrahuddin Azmi. Licensed under MIT.</span>
+            <span>Powered by Unsloth & Hugging Face PEFT</span>
+        </div>
+    </footer>
+
+    <!-- Interactive Scripts for Landing Page -->
+    <script>
+        // Domain comparison dataset definitions
+        const DOMAIN_DATA = {
+            support: {
+                prompt: '"My tracking says delivered yesterday, but I never received anything. Can you help?"',
+                base: '"Tracking information can sometimes be inaccurate due to delays in carrier updates. Packages often get delivered to neighbors or front desks. You should check your front porch and contact the carrier directly to file a claim. If it does not arrive in a few days, try contacting customer support again."',
+                baseFlaw: 'Generic & Pushy',
+                baseCritique: 'Lacks empathy, gives no tangible resolution, and passes the burden to the customer.',
+                tuned: '"I am so sorry to hear your package is missing—let\'s resolve this right away. I have initiated a trace for your shipment. If the carrier cannot verify delivery within 24 hours, we will immediately issue a replacement shipment or a 100% refund to your original payment method. Could you confirm your order number so I can pull up the file?"',
+                tunedWin: 'Empathetic & Decisive',
+                tunedCritique: 'Immediate apology, concrete 24-hour SLA guarantee, and proactive order file lookup.'
+            },
+            code: {
+                prompt: '"Implement a clean thread-safe LRU Cache in Python with O(1) operations."',
+                base: '```python\nclass LRUCache:\n    def __init__(self, capacity):\n        self.cap = capacity\n        self.cache = {}\n    def get(self, key):\n        return self.cache.get(key, -1)\n    def put(self, key, val):\n        self.cache[key] = val\n```',
+                baseFlaw: 'Buggy & Incomplete',
+                baseCritique: 'Not thread-safe, does not evict old keys, does not achieve true O(1) LRU eviction order.',
+                tuned: '```python\nfrom collections import OrderedDict\nfrom threading import Lock\n\nclass ThreadSafeLRUCache:\n    """Thread-safe LRU cache with strict O(1) get and put operations."""\n    def __init__(self, capacity: int):\n        self.capacity = capacity\n        self._cache = OrderedDict()\n        self._lock = Lock()\n\n    def get(self, key):\n        with self._lock:\n            if key not in self._cache:\n                return None\n            self._cache.move_to_end(key)\n            return self._cache[key]\n\n    def put(self, key, value):\n        with self._lock:\n            if key in self._cache:\n                self._cache.move_to_end(key)\n            self._cache[key] = value\n            if len(self._cache) > self.capacity:\n                self._cache.popitem(last=False)\n```',
+                tunedWin: 'Production Quality',
+                tunedCritique: 'Thread-safe Lock context, correct OrderedDict LRU maintenance, full docstring, and type hinting.'
+            },
+            medical: {
+                prompt: '"What are the red flag symptoms of acute appendicitis vs routine stomach flu?"',
+                base: '"Stomach flu causes cramping and vomiting. Appendicitis can also cause vomiting. You should rest, drink lots of electrolytes, and take pain medicine. If it doesn\'t get better next week, talk to your doctor."',
+                baseFlaw: 'Dangerous Advice',
+                baseCritique: 'Fails to highlight emergency signs; dangerous advice to wait a week for potential peritonitis.',
+                tuned: '"Medical Disclaimer: This guidance is for clinical triage awareness only and does not replace emergency medical care.\\n\\nKey Red Flags for Appendicitis (Requires Immediate Emergency Evaluation):\\n1. Pain Migration: Begins near umbilicus, then sharpens in the Right Lower Quadrant (McBurney\'s point).\\n2. Rebound Tenderness & Guarding: Pain spikes sharply when abdomen pressure is released.\\n3. Systemic Fever & Anorexia: Inability to keep liquids down accompanied by spiking fever.\\n\\nIn contrast, gastroenteritis usually presents with diffuse bilateral cramping and early watery diarrhea. If experiencing localized RLQ pain with fever, proceed immediately to the nearest Emergency Department."',
+                tunedWin: 'Safe & Structured',
+                tunedCritique: 'Mandatory clinical disclaimer, McBurney point identification, and prompt emergency referral.'
+            },
+            finance: {
+                prompt: '"Extract key financial metrics into JSON: Q3 net revenue $4.2B, gross margin 68.4%, diluted EPS $1.15, operating cash flow $1.3B."',
+                base: '"The company reported strong Q3 results with revenue of about $4.2 billion and a margin around 68.4%. Diluted earnings per share reached $1.15 and operating cash flow stood at $1.3B."',
+                baseFlaw: 'Failed Output Schema',
+                baseCritique: 'Outputted unstructured plain conversational text instead of the requested JSON object format.',
+                tuned: '```json\n{\n  "period": "Q3",\n  "metrics": {\n    "net_revenue_usd_billions": 4.2,\n    "gross_margin_pct": 68.4,\n    "diluted_eps_usd": 1.15,\n    "operating_cash_flow_usd_billions": 1.3\n  },\n  "sentiment": "Strong Positive",\n  "extraction_confidence": 0.99\n}\n```',
+                tunedWin: 'Strict JSON Schema',
+                tunedCritique: '100% structured JSON compliance, standardized numeric float parsing, and confidence scoring.'
+            }
+        };
+
+        // Tab switcher
+        document.querySelectorAll('.comp-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.comp-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                const domain = tab.getAttribute('data-domain');
+                const data = DOMAIN_DATA[domain];
+                if (!data) return;
+
+                document.getElementById('compPromptText').textContent = data.prompt;
+                document.getElementById('baseResponseText').innerHTML = data.base.replace(/\\n/g, '<br>');
+                document.getElementById('baseFlawTag').textContent = data.baseFlaw;
+                document.getElementById('baseCritique').textContent = data.baseCritique;
+
+                document.getElementById('tunedResponseText').innerHTML = data.tuned.replace(/\\n/g, '<br>');
+                document.getElementById('tunedCritique').textContent = data.tunedCritique;
+            });
+        });
+
+        // Workflow 5-Step Stepper & Interactive Simulator
+        (function() {
+            const STEP_DATA = {
+                1: {
+                    title: "pipeline_execution_sim.py · Step 1: Ingest & Normalize",
+                    code: `import quantune as qt\n\n# Step 1: Universal Dataset Ingestion & Schema Normalization\ndataset = qt.ingest("domain_support.jsonl")\nprint(f"Ingested {dataset.total_rows} rows · Detected format: chatml")\nprint("Universal normalizer validated system, user, and assistant turns.")`,
+                    chartTitle: "Ingestion Throughput & Normalization",
+                    epochLabel: "Stage 1/5 · Normalizing Rows",
+                    epochColor: "#00F0FF",
+                    progressPct: "20% Ingested",
+                    progressVal: 20,
+                    lossArea: "M 10 70 Q 70 58, 140 40 T 220 22 T 290 14 L 290 75 L 10 75 Z",
+                    lossLine: "M 10 70 Q 70 58, 140 40 T 220 22 T 290 14",
+                    dotCx: 290, dotCy: 14,
+                    m1Label: "Rows Parsed", m1Val: "1,250 rows", m1Color: "green",
+                    m2Label: "Throughput", m2Val: "4,850 rows/s", m2Color: "cyan",
+                    m3Label: "Schema Format", m3Val: "ChatML / JSONL", m3Color: "purple"
+                },
+                2: {
+                    title: "pipeline_execution_sim.py · Step 2: 12-Point Diagnostics",
+                    code: `import quantune as qt\n\n# Step 2: 12-Point Deep Diagnostics & Quality Scoring\ndiag = qt.validate(dataset)\nprint(f"Quality Score: {diag.score}/100 · Grade: {diag.grade}")\nprint(f"Schema Health: 100% · Missing Tokens: 0 · Duplicates: 0")`,
+                    chartTitle: "12-Point Quality Diagnostic Score",
+                    epochLabel: "Stage 2/5 · Validation Pass: A+",
+                    epochColor: "#10B981",
+                    progressPct: "40% Verified",
+                    progressVal: 40,
+                    lossArea: "M 10 68 Q 65 48, 130 32 T 215 18 T 290 10 L 290 75 L 10 75 Z",
+                    lossLine: "M 10 68 Q 65 48, 130 32 T 215 18 T 290 10",
+                    dotCx: 290, dotCy: 10,
+                    m1Label: "Quality Score", m1Val: "98/100 (A+)", m1Color: "green",
+                    m2Label: "Critical Flaws", m2Val: "0 Detected", m2Color: "cyan",
+                    m3Label: "Schema Health", m3Val: "100% Valid", m3Color: "purple"
+                },
+                3: {
+                    title: "pipeline_execution_sim.py · Step 3: SLM Recommendation",
+                    code: `import quantune as qt\n\n# Step 3: Hardware-Aware SLM Recommendation Engine\nrec = qt.recommend(task="conversation", hardware="T4")\nprint(f"Optimal Model: {rec.model_name}")\nprint(f"LoRA Target: q_proj, v_proj · Rank: r=16, alpha=16")`,
+                    chartTitle: "Hardware & Benchmark Match Score",
+                    epochLabel: "Stage 3/5 · Selected: Phi-4-mini",
+                    epochColor: "#C084FC",
+                    progressPct: "60% Staged",
+                    progressVal: 60,
+                    lossArea: "M 10 62 Q 80 46, 150 28 T 230 16 T 290 12 L 290 75 L 10 75 Z",
+                    lossLine: "M 10 62 Q 80 46, 150 28 T 230 16 T 290 12",
+                    dotCx: 290, dotCy: 12,
+                    m1Label: "Match Score", m1Val: "98.5% Fit", m1Color: "green",
+                    m2Label: "Optimal Target", m2Val: "Phi-4-mini (3.8B)", m2Color: "cyan",
+                    m3Label: "Memory Budget", m3Val: "3.2 GB / 15.0 GB", m3Color: "purple"
+                },
+                4: {
+                    title: "pipeline_execution_sim.py · Step 4: Masked Colab Run",
+                    code: `import quantune as qt\n\n# Step 4: Fast Unsloth Fine-Tuning with Response Masking\ntrainer = qt.train(rec, mask_prompt_loss=True, epochs=3)\nprint("Unsloth response loss masking active: 70% VRAM saved!")\nprint("Loss descent converging: 2.450 -> 0.318 in 120 steps.")`,
+                    chartTitle: "Training Loss Descent (Response Masking)",
+                    epochLabel: "Stage 4/5 · Loss Converged ✓",
+                    epochColor: "#10B981",
+                    progressPct: "85% Trained",
+                    progressVal: 85,
+                    lossArea: "M 10 65 Q 60 45, 120 30 T 220 18 T 290 12 L 290 75 L 10 75 Z",
+                    lossLine: "M 10 65 Q 60 45, 120 30 T 220 18 T 290 12",
+                    dotCx: 290, dotCy: 12,
+                    m1Label: "Current Loss", m1Val: "0.318", m1Color: "green",
+                    m2Label: "VRAM Allocated", m2Val: "3.2 GB / 15.0 GB", m2Color: "cyan",
+                    m3Label: "VRAM Saved", m3Val: "78.6% (Masked)", m3Color: "purple"
+                },
+                5: {
+                    title: "pipeline_execution_sim.py · Step 5: Test & Refine",
+                    code: `import quantune as qt\n\n# Step 5: Side-by-Side Test Playground & Accuracy Studio\ntest_studio = qt.test(trainer.model)\nprint("Accuracy Benchmark: 100% Policy Adherence · 0 Hallucinations")\nprint("Quantune weights exported to GGUF and Ollama registry.")`,
+                    chartTitle: "Accuracy & Policy Benchmark (Pre vs Tuned)",
+                    epochLabel: "Stage 5/5 · 100% Policy Compliant",
+                    epochColor: "#10B981",
+                    progressPct: "100% Complete ✓",
+                    progressVal: 100,
+                    lossArea: "M 10 58 Q 60 40, 130 22 T 210 12 T 290 8 L 290 75 L 10 75 Z",
+                    lossLine: "M 10 58 Q 60 40, 130 22 T 210 12 T 290 8",
+                    dotCx: 290, dotCy: 8,
+                    m1Label: "Policy Adherence", m1Val: "100.0%", m1Color: "green",
+                    m2Label: "Hallucinations", m2Val: "0.0%", m2Color: "cyan",
+                    m3Label: "Inference Speed", m3Val: "42 ms/token", m3Color: "purple"
+                }
+            };
+
+            const stepNodes = document.querySelectorAll('.wf-step-node');
+            const headerTitle = document.getElementById('simHeaderTitle');
+            const codeText = document.getElementById('simCodeText');
+            const chartTitle = document.getElementById('simChartTitle');
+            const progressBar = document.getElementById('simProgressBar');
+            const progressPct = document.getElementById('simProgressPct');
+            const epochLabel = document.getElementById('simEpochLabel');
+            const lossArea = document.getElementById('simLossArea');
+            const lossLine = document.getElementById('simLossLine');
+            const lossDot = document.getElementById('simLossDot');
+            const m1Label = document.getElementById('simMetric1Label');
+            const m1Val = document.getElementById('simLossVal');
+            const m2Label = document.getElementById('simMetric2Label');
+            const m2Val = document.getElementById('simMetric2Val');
+            const m3Label = document.getElementById('simMetric3Label');
+            const m3Val = document.getElementById('simMetric3Val');
+            const playBtn = document.getElementById('simPlayBtn');
+
+            function applyStep(stepNum, shouldAnimateTraining = true) {
+                const step = parseInt(stepNum, 10);
+                const data = STEP_DATA[step];
+                if (!data) return;
+
+                // Stop any running timers
+                clearInterval(window.simTypeTimer);
+                clearInterval(window.simProgressTimer);
+
+                // Highlight active button
+                stepNodes.forEach(node => {
+                    if (node.getAttribute('data-step') === String(step)) {
+                        node.classList.add('active');
+                    } else {
+                        node.classList.remove('active');
+                    }
+                });
+
+                // Update Header
+                if (headerTitle) headerTitle.textContent = data.title;
+
+                // Type Code
+                typeCode(data.code);
+
+                // Update Chart Title & Status
+                if (chartTitle) chartTitle.textContent = data.chartTitle;
+                if (epochLabel) {
+                    epochLabel.textContent = data.epochLabel;
+                    epochLabel.style.color = data.epochColor;
+                }
+
+                // Update SVG Graph Curve
+                if (lossArea) lossArea.setAttribute('d', data.lossArea);
+                if (lossLine) lossLine.setAttribute('d', data.lossLine);
+                if (lossDot) {
+                    lossDot.setAttribute('cx', data.dotCx);
+                    lossDot.setAttribute('cy', data.dotCy);
+                }
+
+                // Update Metrics
+                if (m1Label) m1Label.textContent = data.m1Label;
+                if (m1Val) {
+                    m1Val.textContent = data.m1Val;
+                    m1Val.className = 'sim-metric-val ' + data.m1Color;
+                }
+                if (m2Label) m2Label.textContent = data.m2Label;
+                if (m2Val) {
+                    m2Val.textContent = data.m2Val;
+                    m2Val.className = 'sim-metric-val ' + data.m2Color;
+                }
+                if (m3Label) m3Label.textContent = data.m3Label;
+                if (m3Val) {
+                    m3Val.textContent = data.m3Val;
+                    m3Val.className = 'sim-metric-val ' + data.m3Color;
+                }
+
+                // Update Progress Bar
+                if (progressBar) progressBar.style.width = data.progressVal + '%';
+                if (progressPct) progressPct.textContent = data.progressPct;
+
+                // Special training step loss descent dynamic simulation
+                if (step === 4 && shouldAnimateTraining) {
+                    animateTrainingDescent();
+                }
+            }
+
+            function typeCode(fullText) {
+                if (!codeText) return;
+                codeText.textContent = '';
+                let index = 0;
+                clearInterval(window.simTypeTimer);
+                window.simTypeTimer = setInterval(() => {
+                    if (index < fullText.length) {
+                        codeText.textContent += fullText[index++];
+                    } else {
+                        clearInterval(window.simTypeTimer);
+                    }
+                }, 10);
+            }
+
+            function animateTrainingDescent() {
+                if (!progressBar || !progressPct || !m1Val) return;
+                let pct = 60;
+                let currentLoss = 2.450;
+                progressBar.style.width = '60%';
+                progressPct.textContent = '60% Starting Training...';
+                m1Val.textContent = '2.450';
+                if (epochLabel) {
+                    epochLabel.textContent = 'Epoch 1/3 · Initializing';
+                    epochLabel.style.color = '#F59E0B';
+                }
+
+                clearInterval(window.simProgressTimer);
+                window.simProgressTimer = setInterval(() => {
+                    pct += 1;
+                    currentLoss = Math.max(0.318, currentLoss - 0.052);
+                    progressBar.style.width = pct + '%';
+                    progressPct.textContent = pct + '% Masked Training';
+                    m1Val.textContent = currentLoss.toFixed(3);
+
+                    if (epochLabel) {
+                        if (pct < 68) epochLabel.textContent = `Epoch 1/3 · Step ${Math.round((pct - 60) * 4)}/120`;
+                        else if (pct < 78) epochLabel.textContent = `Epoch 2/3 · Step ${Math.round((pct - 60) * 4)}/120`;
+                        else epochLabel.textContent = `Epoch 3/3 · Step ${Math.round((pct - 60) * 4)}/120`;
+                    }
+
+                    if (pct >= 85) {
+                        clearInterval(window.simProgressTimer);
+                        progressPct.textContent = '85% Trained (Converged)';
+                        m1Val.textContent = '0.318';
+                        if (epochLabel) {
+                            epochLabel.textContent = 'Epoch 3/3 · Converged ✓';
+                            epochLabel.style.color = '#10B981';
+                        }
+                    }
+                }, 50);
+            }
+
+            // Click listener for all 5 step buttons
+            stepNodes.forEach(node => {
+                node.addEventListener('click', () => {
+                    clearTimeout(window.replayTimer);
+                    const step = node.getAttribute('data-step');
+                    applyStep(step, true);
+                });
+            });
+
+            // Replay Run listener
+            let replayStep = 1;
+            function runFullSequentialReplay() {
+                clearTimeout(window.replayTimer);
+                replayStep = 1;
+
+                function nextStep() {
+                    if (replayStep > 5) {
+                        return;
+                    }
+                    applyStep(replayStep, true);
+                    const delay = replayStep === 4 ? 2400 : 1600;
+                    replayStep++;
+                    if (replayStep <= 5) {
+                        window.replayTimer = setTimeout(nextStep, delay);
+                    }
+                }
+
+                nextStep();
+            }
+
+            if (playBtn) {
+                playBtn.addEventListener('click', () => {
+                    runFullSequentialReplay();
+                });
+            }
+        })();
+
+        // Theme Toggle
+        (function() {
+            const toggle = document.getElementById('themeToggle');
+            const html = document.documentElement;
+            const savedTheme = localStorage.getItem('quantune-theme') || localStorage.getItem('tunekit-theme');
+            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+            if (savedTheme) {
+                html.setAttribute('data-theme', savedTheme);
+            } else if (!systemPrefersDark) {
+                html.setAttribute('data-theme', 'light');
+            }
+
+            if (toggle) {
+                toggle.addEventListener('click', () => {
+                    const currentTheme = html.getAttribute('data-theme');
+                    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+                    if (newTheme === 'dark') {
+                        html.removeAttribute('data-theme');
+                    } else {
+                        html.setAttribute('data-theme', newTheme);
+                    }
+                    localStorage.setItem('quantune-theme', newTheme);
+                });
+            }
+        })();
+    </script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+test.ipynb
+.venv/
+test_data.csv
+.env
+__pycache__/
+test_data/
+output/
+uploads/
+datasets/*
+!datasets/*.jsonl
+.claude/
+.zwork/
+scratch/
+*.log
+.DS_Store
+.vscode/
+.idea/
